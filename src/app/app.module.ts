@@ -21,6 +21,7 @@ import {GameService} from './game/game.service';
 import { GameBoardComponent } from './game/game-board/game-board.component';
 import { NewGameComponent } from './game/new-game/new-game.component';
 import {AngularFireModule} from 'angularfire2';
+import { ChatComponent } from './chat/chat.component';
 
 
 
@@ -35,7 +36,8 @@ import {AngularFireModule} from 'angularfire2';
     GameComponent,
     ScoreComponent,
     GameBoardComponent,
-    NewGameComponent
+    NewGameComponent,
+    ChatComponent
   ],
   imports: [
     BrowserModule,

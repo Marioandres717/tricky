@@ -24,7 +24,7 @@ export class AuthService {
               private afs: AngularFirestore,
               private router: Router) {
 
-    /// Get auth data, then get firestore user document || null
+    /// Get auth data, then get Firestore user document || null
     // We want to define the user observable so any part of the app can subscribe to it and receive updates on real-time
     this.user = this.afAuth.authState.switchMap(user => {
       if (user) {
@@ -49,7 +49,6 @@ export class AuthService {
 
   private updateUserData(user) {
     // Sets user data to firestore on login
-
   const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
 
   const data: User = {

@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
 import { BlockModel} from './block.model';
-import {PlayerModel} from './player.model';
 import {GameModel} from './game.model';
 import {Subject} from 'rxjs/Subject';
+import * as io from 'socket.io-client';
+import {Observable} from 'rxjs/Observable';
 
 @Injectable()
 export class GameService {
   newGame = new GameModel;
   blocks: BlockModel[] = [];
   OngoingGame$ = new Subject<boolean>();
+  private socket = io('http://localhost:4200');
 
   selectNewGame(value: string) {
     if (value) {

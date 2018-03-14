@@ -4,8 +4,10 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build --prod",
+    "start": "npm run build & concurrently --kill-others \"npm run serve-api\" \"npm run serve\"",
+    "serve": "ng serve --proxy-config proxy.conf.json",
+    "build": "ng build --output-path=public",
+    "serve-api": "node server.js",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -25,10 +27,15 @@
     "@angular/platform-browser-dynamic": "^5.2.0",
     "@angular/router": "^5.2.0",
     "angularfire2": "^5.0.0-rc.6",
+    "body-parser": "^1.18.2",
+    "concurrently": "^3.5.1",
     "core-js": "^2.4.1",
+    "express": "^4.16.3",
     "firebase": "^4.11.0",
     "hammerjs": "^2.0.8",
     "rxjs": "^5.5.6",
+    "socket.io": "^2.0.4",
+    "socket.io-client": "^2.0.4",
     "zone.js": "^0.8.19"
   },
   "devDependencies": {
@@ -46,6 +53,7 @@
     "karma-coverage-istanbul-reporter": "^1.2.1",
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
+    "nodemon": "^1.17.2",
     "protractor": "~5.1.2",
     "ts-node": "~4.1.0",
     "tslint": "~5.9.1",
