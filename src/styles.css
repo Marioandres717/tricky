@@ -1,0 +1,22 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~@angular/material/prebuilt-themes/deeppurple-amber.css";
+
+html, body {
+  font-family: Roboto, sans-serif;
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+}
+
+i.material-icons.clear{
+  color: steelblue;
+  font-size: 50px;
+}
+
+i.material-icons.panorama_fish_eye {
+  color: red;
+  font-size: 50px;
+}
+

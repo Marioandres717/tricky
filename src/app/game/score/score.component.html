@@ -1,0 +1,25 @@
+<mat-table [dataSource]="dataSource" class="score-board mat-elevation-z3" fxFlex="100%">
+  <!--USERNAME COLUMN-->
+  <ng-container matColumnDef="username">
+    <mat-header-cell *matHeaderCellDef class="username-table">Username</mat-header-cell>
+    <mat-cell *matCellDef="let user"> {{user.username}} </mat-cell>
+  </ng-container>
+  <!--WINS COLUMN-->
+  <ng-container matColumnDef="win" >
+    <mat-header-cell *matHeaderCellDef>Win</mat-header-cell>
+    <mat-cell *matCellDef="let user">{{user.win}}</mat-cell>
+  </ng-container>
+  <!--DRAW COLUMN-->
+  <ng-container matColumnDef="draw">
+    <mat-header-cell *matHeaderCellDef>Draw</mat-header-cell>
+    <mat-cell *matCellDef="let user">{{user.draw}}</mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+  <mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></mat-row>
+
+</mat-table>
+
+<button mat-raised-button color="warn" (click)="resetGame()">Reset</button>
+
+<!--<mat-card>Score component</mat-card>-->
