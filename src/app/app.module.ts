@@ -48,7 +48,7 @@ import { ChatComponent } from './chat/chat.component';
     ReactiveFormsModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
-    AngularFireModule.initializeApp(environment.firebase),
+    // AngularFireModule.initializeApp(environment.firebase),
     AuthModule
   ],
   providers: [GameService],
