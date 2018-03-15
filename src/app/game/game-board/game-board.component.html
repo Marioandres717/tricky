@@ -1,0 +1,12 @@
+<mat-card class="mat-elevation-z3">
+  <mat-grid-list class="tic-tac-grid" cols="3" >
+    <mat-grid-tile *ngFor="let block of blocks; let i = index;"
+                   (click)="playerClick(i)">
+      <i [class]="block.value == 'X' ? 'material-icons clear' : 'material-icons panorama_fish_eye'">{{ block.value }}</i>
+    </mat-grid-tile>
+  </mat-grid-list>
+  <mat-card-content>
+    <p>Turn: {{game.turn}}</p>
+    <p>{{invalidMessage}}</p>
+  </mat-card-content>
+</mat-card>
