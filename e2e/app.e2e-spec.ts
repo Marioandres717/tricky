@@ -1,6 +1,6 @@
 import { AppPage } from './app.po';
 
-describe('tick-tack-toe App', () => {
+describe('inventory-app App', () => {
   let page: AppPage;
 
   beforeEach(() => {

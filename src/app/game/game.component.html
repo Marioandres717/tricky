@@ -1,6 +1,0 @@
-<div class="container" fxLayout="row" fxLayoutGap="50px" fxLayoutAlign="space-around" fxLayout.lt-sm="column">
-  <app-game-board *ngIf="onGoingGame" fxFlex="40%"></app-game-board>
-  <app-score *ngIf="onGoingGame" fxFlex="35%" fxFlexFill (reset)="resetGame($event)" fxLayout="column"></app-score>
-  <app-new-game *ngIf="!onGoingGame" (newGameStarts)="onGoingGame = true"></app-new-game>
-</div>
-
