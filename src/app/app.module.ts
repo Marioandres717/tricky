@@ -6,6 +6,7 @@ import {AppRoutingModule} from './app-routing.module';
 import {MaterialModule} from './material.module';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {AuthModule} from './auth/auth.module';
+import {AngularFireModule} from 'angularfire2';
 
 import {environment} from '../environments/environment';
 
@@ -20,7 +21,6 @@ import { ScoreComponent } from './game/score/score.component';
 import {GameService} from './game/game.service';
 import { GameBoardComponent } from './game/game-board/game-board.component';
 import { NewGameComponent } from './game/new-game/new-game.component';
-import {AngularFireModule} from 'angularfire2';
 import { ChatComponent } from './chat/chat.component';
 
 
@@ -48,7 +48,7 @@ import { ChatComponent } from './chat/chat.component';
     ReactiveFormsModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
-    // AngularFireModule.initializeApp(environment.firebase),
+    AngularFireModule.initializeApp(environment.firebase),
     AuthModule
   ],
   providers: [GameService],
