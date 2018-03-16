@@ -18,5 +18,6 @@ export class NewGameComponent implements OnInit {
   setGame(form) {
     console.log(form.value.selectedGame);
     this.gameService.selectNewGame(form.value.selectedGame);
+    this.gameService.joinGame(form.value.selectedGame);
   }
 }

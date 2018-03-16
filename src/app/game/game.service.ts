@@ -2,29 +2,42 @@ import { Injectable } from '@angular/core';
 import { BlockModel} from './block.model';
 import {GameModel} from './game.model';
 import {Subject} from 'rxjs/Subject';
-import * as io from 'socket.io-client';
+import io from 'socket.io-client';
 import {Observable} from 'rxjs/Observable';
+import {observable} from 'rxjs/symbol/observable';
 
 @Injectable()
 export class GameService {
   newGame = new GameModel;
   blocks: BlockModel[] = [];
   OngoingGame$ = new Subject<boolean>();
- // private socket = io('http://localhost:4200');
-  //
-  //  testMessage() {
-  //    const observable = new Observable<{msg: string}>(observer => {
-  //      this.socket.on('message', (data) => {
-  //        observer.next(data);
-  //      });
-  //      return () => {this.socket.disconnect(); };
-  //    });
-  //    return observable;
-  //  }
+
+  private socket = io.connect('http://localhost:8080', {'forceNew': true});
+
+  joinGame(data: string) {
+    this.socket.emit('join game', {gameType: data});
+  }
+
+  messageSend(messageContent: string) {
+    // HERE WE HAVE TO ADD THE USER INFORMATION & TIME STAMP
+    this.socket.emit('send-message', messageContent);
+  }
+
+  messageReceived() {
+    const MessageFromOtherUSer = new Observable<string>(observer => {
+      this.socket.on('receive-message', (message) => {
+        observer.next(message);
+      });
+      return () => { this.socket.disconnect(); };
+    });
+    return MessageFromOtherUSer;
+  }
 
   selectNewGame(value: string) {
     if (value) {
       this.OngoingGame$.next(true);
+    } else {
+      this.OngoingGame$.next(false);
     }
   }
 
