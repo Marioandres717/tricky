@@ -25,6 +25,7 @@ var io = require('socket.io')(server);
 io.on('connection', function(socket) {
     console.log('Someone connected via sockets');
 
+    // GAME FUNCTIONS
     socket.on('join game', function(playerInfo) {
       console.log(socket.id);
       socket.name = 'usernames';
@@ -33,13 +34,23 @@ io.on('connection', function(socket) {
       socket.emit('new-message', 'Hello from the server');
     });
 
+    socket.on('player move', function (blockId) {
+      console.log('block selected: ' + blockId);
+      socket.to(socket.gameID).emit('opponent move', blockId);
+    });
+
+
+
+    //CHAT FUNCTIONS
     socket.on('send-message', function(message) {
       console.log(message);
       socket.to(socket.gameID).emit('receive-message', message);
-    })
+    });
 });
 
 
+
+// FUNCTION FOR CREATING 2 PEOPLE SESSIONS
 setInterval(function(){
   console.log('The number of Players in the queue are: ' + waitingQueue.length);
   // if there is only one person in the queue then return
@@ -66,7 +77,7 @@ setInterval(function(){
   //set gameID property in socket
   playerOne.gameID = gameID;
   playerTwo.gameID = gameID;
-
+  //TEST MESSAGE
   console.log(waitingQueue.length);
   io.to(gameID).emit('welcome room', {msg: `hi from room ${gameID}`});
 

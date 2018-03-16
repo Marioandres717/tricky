@@ -18,6 +18,20 @@ export class GameService {
     this.socket.emit('join game', {gameType: data});
   }
 
+  displayMove() {
+    const opponentsMove = new Observable<number>(observer => {
+      this.socket.on('opponent move', (blockId) => {
+        observer.next(blockId);
+      });
+      return () => { this.socket.disconnect(); };
+    });
+    return opponentsMove;
+  }
+
+  makeMove(blockId: number) {
+    this.socket.emit('player move', blockId);
+  }
+
   messageSend(messageContent: string) {
     // HERE WE HAVE TO ADD THE USER INFORMATION & TIME STAMP
     this.socket.emit('send-message', messageContent);
@@ -46,7 +60,7 @@ export class GameService {
     this.newGame.turn = 0;
     this.newGame.Winner = null;
     this.newGame.Draw = null;
-    console.log(this.newGame.gameId);
+    // console.log(this.newGame.gameId);
     return this.newGame;
   }
 
@@ -69,6 +83,8 @@ export class GameService {
         this.newGame.turn = 1;
         this.blocks[position].userId = 12345;
         this.blocks[position].free = false;
+
+        this.makeMove(position);
         // this.invalidMessage = '';
       } else {
         this.blocks[position].value = 'O';
