@@ -19,6 +19,7 @@ interface User {
 @Injectable()
 export class AuthService {
   user: Observable<User>;
+  isAuthenticated: boolean;
 
   constructor(private afAuth: AngularFireAuth,
               private afs: AngularFirestore,
@@ -43,6 +44,23 @@ export class AuthService {
         reject(err);
       });
     });
+  }
+
+  checkForAuth() {
+    this.afAuth.authState.subscribe(user => {
+      if (user) {
+        this.isAuthenticated = true;
+        console.log('the user is logged in!' + user.email);
+        this.router.navigate(['/game']);  
+      } else {
+        this.isAuthenticated = false;
+        this.router.navigate(['/login']);
+      }
+    })
+  }
+
+  getAuth() {
+    return this.isAuthenticated;
   }
 
   // googleLogin() {
@@ -73,7 +91,8 @@ export class AuthService {
 
   signOut() {
     this.afAuth.auth.signOut().then(() => {
-      this.router.navigate(['/']);
+      console.log('user logout!' + this.isAuthenticated);
+      this.router.navigate(['/login']);
     });
   }
 

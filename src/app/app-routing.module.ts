@@ -1,14 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {RouterModule, Routes} from '@angular/router';
-import {WelcomeComponent} from './welcome/welcome.component';
 import {LoginComponent} from './auth/login/login.component';
 import {GameComponent} from './game/game.component';
+import {AuthGuard} from './auth/auth.guard';
 
 const routes: Routes = [
-  {path: '', component: WelcomeComponent},
-  {path: 'login', component: LoginComponent},
-  {path: 'game', component: GameComponent}
+  {path: '', component: LoginComponent},
+  {path: 'game', component: GameComponent, canActivate: [AuthGuard] }
 ];
 @NgModule({
   imports: [
@@ -18,6 +17,7 @@ const routes: Routes = [
   exports: [
     RouterModule
   ],
-  declarations: []
+  declarations: [],
+  providers: [AuthGuard]
 })
 export class AppRoutingModule { }
