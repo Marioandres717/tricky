@@ -3,15 +3,15 @@
     <mat-icon>face</mat-icon>
     <span class="nav-caption">Signup</span>
   </a> -->
-  <a mat-list-item routerLink="/" (click)="onClose()">
+  <a *ngIf="!isAuth" mat-list-item routerLink="/" (click)="onClose()">
     <mat-icon>input</mat-icon>
     <span class="nav-caption">Login</span>
   </a>
-  <a mat-list-item routerLink="/game" (click)="onClose()">
+  <a  *ngIf="isAuth" mat-list-item routerLink="/game" (click)="onClose()">
     <mat-icon>games</mat-icon>
     <span class="nav-caption" >Game</span>
   </a>
-  <mat-list-item>
+  <mat-list-item *ngIf="isAuth">
     <button  mat-icon-button (click)="onClose()">
       <mat-icon>eject</mat-icon>
       <span class="nav-caption" (click)='logout()'>Logout</span>

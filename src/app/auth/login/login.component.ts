@@ -27,7 +27,10 @@ export class LoginComponent implements OnInit {
 
     this.signUp = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required]
+      username: ['',Validators.required, Validators.minLength(4), Validators.maxLength(10)],
+      password: ['', Validators.required, Validators.minLength(6)],
+      birthday: ['', Validators.required],
+      gender: ['', Validators.required]
     });
 
     this.loading = false;
@@ -50,5 +53,9 @@ export class LoginComponent implements OnInit {
 
   onSubmitLogin(form: FormGroup) {
     this.auth.loginUser(form.value.email, form.value.password);
+  }
+
+  googleLogin() {
+    this.auth.googleLogin();
   }
 }

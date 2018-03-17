@@ -7,6 +7,7 @@ import {AngularFirestore, AngularFirestoreDocument} from 'angularfire2/firestore
 
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/switchMap';
+import { Subject } from 'rxjs/Subject';
 
 interface User {
   uid: string;
@@ -21,7 +22,8 @@ interface User {
 @Injectable()
 export class AuthService {
   user: Observable<User>;
-  isAuthenticated: boolean;
+  private isAuthenticated = false;
+  authChange = new Subject<boolean>();
 
   constructor(private afAuth: AngularFireAuth,
               private afs: AngularFirestore,
@@ -57,40 +59,42 @@ export class AuthService {
 
  
 
-  // googleLogin() {
-  //   const provider = new firebase.auth.GoogleAuthProvider();
-  //   return this.oAuthLogin(provider);
-  // }
+  googleLogin() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    return this.oAuthLogin(provider);
+  }
 
-  // private oAuthLogin(provider) {
-  //   return this.afAuth.auth.signInWithPopup(provider)
-  //     .then((credential) => {
-  //       this.updateUserData(credential.user);
-  //     });
-  // }
+  private oAuthLogin(provider) {
+    return this.afAuth.auth.signInWithPopup(provider)
+      .then((credential) => {
+        this.updateUserData(credential.user);
+      });
+  }
 
- //  private updateUserData(user) {
- //    // Sets user data to firestore on login
- //  const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
- //
- //  const data: User = {
- //    uid: user.uid,  
- //    email: user.email,
- //    displayName: user.displayName,
- //    photoURL: user.photoURL
- //  };
- //  // Stores in the db
- //  return userRef.set(Object.assign({}, data), {merge: true});
- // }
+  private updateUserData(user) {
+    // Sets user data to firestore on login
+  const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
+ 
+  const data: User = {
+    uid: user.uid,  
+    email: user.email,
+    displayName: user.displayName,
+    photoURL: user.photoURL
+  };
+  // Stores in the db
+  return userRef.set(Object.assign({}, data), {merge: true});
+ }
 
   checkForAuth() {
     this.afAuth.authState.subscribe(user => {
       if (user) {
         this.isAuthenticated = true;
+        this.authChange.next(true);
         console.log('the user is logged in!' + user.email);
         this.router.navigate(['/game']);  
       } else {
         this.isAuthenticated = false;
+        this.authChange.next(false);
         this.router.navigate(['/']);
       }
     })
@@ -100,6 +104,7 @@ export class AuthService {
     return this.isAuthenticated;
   }
   signOut() {
+  this.authChange.next(false);
    this.afAuth.auth.signOut();
   }
 
