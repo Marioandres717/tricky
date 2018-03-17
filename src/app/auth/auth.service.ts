@@ -87,13 +87,26 @@ export class AuthService {
 
   public checkForAuth() {
     this.afAuth.authState.subscribe(user => {
-      user ? this.isAuthenticated = true : this.isAuthenticated = false;
+      if (user) {
+        this.isAuthenticated = true;
+        this.authChange.next(true);
+        console.log('esta llamando todo esto?');
+      } else {
+        this.isAuthenticated = false;
+        this.authChange.next(false);
+      }
     });
+    return this.isAuthenticated;
+  }
+
+  public getAuthState() {
+    console.log('esto lo llama el guard');
     return this.isAuthenticated;
   }
 
   signOut() {
     this.authChange.next(false);
     this.afAuth.auth.signOut();
+    this.router.navigate(['/']);
   }
 }

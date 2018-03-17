@@ -22,6 +22,7 @@ import { PlayerLeftComponent } from './game/game-board/player-left.component';
 import { NewGameComponent } from './game/new-game/new-game.component';
 import { ChatComponent } from './chat/chat.component';
 import { HomeComponent } from './home/home.component';
+import { AuthService } from './auth/auth.service';
 
 
 
@@ -52,7 +53,7 @@ import { HomeComponent } from './home/home.component';
     AuthModule
   ],
   entryComponents: [PlayerLeftComponent],
-  providers: [GameService],
+  providers: [GameService, AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
