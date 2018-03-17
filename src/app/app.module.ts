@@ -7,6 +7,8 @@ import {MaterialModule} from './material.module';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {AuthModule} from './auth/auth.module';
 import {AngularFireModule} from 'angularfire2';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material';
 
 import {environment} from '../environments/environment';
 
@@ -24,8 +26,6 @@ import { ChatComponent } from './chat/chat.component';
 import { HomeComponent } from './home/home.component';
 import { AuthService } from './auth/auth.service';
 
-
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -41,6 +41,8 @@ import { AuthService } from './auth/auth.service';
     HomeComponent,
   ],
   imports: [
+    MatTableModule,
+    MatPaginatorModule,
     BrowserModule,
     AppRoutingModule,
     MaterialModule,
