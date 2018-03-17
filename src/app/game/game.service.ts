@@ -18,6 +18,16 @@ export class GameService {
     this.socket.emit('join game', {gameType: data});
   }
 
+  leftGame() {
+    const PlayerLeft = new Observable<string>(observer => {
+      this.socket.on('opponent left', (message) => {
+        observer.next(message);
+      });
+      return () => { this.socket.disconnect(); };
+    });
+    return PlayerLeft;
+  }
+
   displayMove() {
     const opponentsMove = new Observable<number>(observer => {
       this.socket.on('opponent move', (blockId) => {

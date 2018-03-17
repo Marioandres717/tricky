@@ -23,6 +23,15 @@ var io = require('socket.io')(server);
 
 io.on('connection', function(socket) {
     console.log('Someone connected via sockets');
+    // PLAYER CLOSES THE BROWSER
+    socket.on('disconnect', function() {
+      console.log('someone disconnect: ' + socket.id);
+      var index = waitingQueue.indexOf(socket);
+      if (index !== -1) {
+        waitingQueue.splice(index, 1);
+      }
+      socket.to(socket.gameID).emit('opponent left', 'Your opponent left the game! YOU HAVE WON!');
+    });
 
     // GAME FUNCTIONS
     socket.on('join game', function(playerInfo) {
@@ -37,7 +46,6 @@ io.on('connection', function(socket) {
       console.log('block selected: ' + blockId);
       socket.to(socket.gameID).emit('opponent move', blockId);
     });
-
 
 
     //CHAT FUNCTIONS

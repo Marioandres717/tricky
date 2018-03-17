@@ -20,6 +20,7 @@ import { GameComponent } from './game/game.component';
 import { ScoreComponent } from './game/score/score.component';
 import {GameService} from './game/game.service';
 import { GameBoardComponent } from './game/game-board/game-board.component';
+import { PlayerLeftComponent } from './game/game-board/player-left.component';
 import { NewGameComponent } from './game/new-game/new-game.component';
 import { ChatComponent } from './chat/chat.component';
 
@@ -36,8 +37,9 @@ import { ChatComponent } from './chat/chat.component';
     GameComponent,
     ScoreComponent,
     GameBoardComponent,
+    PlayerLeftComponent,
     NewGameComponent,
-    ChatComponent
+    ChatComponent,
   ],
   imports: [
     BrowserModule,
@@ -51,6 +53,7 @@ import { ChatComponent } from './chat/chat.component';
     AngularFireModule.initializeApp(environment.firebase),
     AuthModule
   ],
+  entryComponents: [PlayerLeftComponent],
   providers: [GameService],
   bootstrap: [AppComponent]
 })
