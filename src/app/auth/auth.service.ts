@@ -91,9 +91,11 @@ export class AuthService {
         this.isAuthenticated = true;
         this.authChange.next(true);
         console.log('esta llamando todo esto?');
+        this.router.navigate(['/home']);
       } else {
         this.isAuthenticated = false;
         this.authChange.next(false);
+        this.router.navigate(['/']);
       }
     });
     return this.isAuthenticated;
