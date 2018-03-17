@@ -41,7 +41,7 @@ export class LoginComponent implements OnInit {
     this.loading = true;
     this.auth.createNewUser(email, password).then(function() {
       self.loading = false;
-      self.router.navigate(['']);
+      // self.router.navigate(['/game']);
     }, function(err) {
       self.loading = false;
       console.log('err');

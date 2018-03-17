@@ -54,7 +54,7 @@ export class AuthService {
         this.router.navigate(['/game']);  
       } else {
         this.isAuthenticated = false;
-        this.router.navigate(['/login']);
+        this.router.navigate(['/']);
       }
     })
   }
@@ -92,7 +92,7 @@ export class AuthService {
   signOut() {
     this.afAuth.auth.signOut().then(() => {
       console.log('user logout!' + this.isAuthenticated);
-      this.router.navigate(['/login']);
+      this.router.navigate(['/']);
     });
   }
 
