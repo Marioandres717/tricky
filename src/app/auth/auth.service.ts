@@ -13,7 +13,9 @@ interface User {
   email: string;
   photoURL?: string;
   displayName?: string;
-  DateOfBirth?: Date;
+  dateOfBirth?: Date;
+  Win?: number;
+  TotalGames?: number;
 }
 
 @Injectable()
@@ -27,13 +29,13 @@ export class AuthService {
 
     /// Get auth data, then get Firestore user document || null
     // We want to define the user observable so any part of the app can subscribe to it and receive updates on real-time
-    this.user = this.afAuth.authState.switchMap(user => {
-      if (user) {
-        return this.afs.doc<User>(`users/${user.uid}`).valueChanges();
-      } else {
-        return Observable.of(null);
-      }
-    });
+    // this.user = this.afAuth.authState.switchMap(user => {
+    //   if (user) {
+    //     return this.afs.doc<User>(`users/${user.uid}`).valueChanges();
+    //   } else {
+    //     return Observable.of(null);
+    //   }
+    // });
   }
 
   public createNewUser(email: string, password: string) {
@@ -46,22 +48,14 @@ export class AuthService {
     });
   }
 
-  checkForAuth() {
-    this.afAuth.authState.subscribe(user => {
-      if (user) {
-        this.isAuthenticated = true;
-        console.log('the user is logged in!' + user.email);
-        this.router.navigate(['/game']);  
-      } else {
-        this.isAuthenticated = false;
-        this.router.navigate(['/']);
-      }
+  public loginUser(email: string, password: string) {
+    this.afAuth.auth.signInWithEmailAndPassword(email, password).then( (credential) => {})
+    .catch(err => {
+      console.log('something is wrong!', err.message);
     })
   }
 
-  getAuth() {
-    return this.isAuthenticated;
-  }
+ 
 
   // googleLogin() {
   //   const provider = new firebase.auth.GoogleAuthProvider();
@@ -80,7 +74,7 @@ export class AuthService {
  //  const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
  //
  //  const data: User = {
- //    uid: user.uid,
+ //    uid: user.uid,  
  //    email: user.email,
  //    displayName: user.displayName,
  //    photoURL: user.photoURL
@@ -89,11 +83,24 @@ export class AuthService {
  //  return userRef.set(Object.assign({}, data), {merge: true});
  // }
 
+  checkForAuth() {
+    this.afAuth.authState.subscribe(user => {
+      if (user) {
+        this.isAuthenticated = true;
+        console.log('the user is logged in!' + user.email);
+        this.router.navigate(['/game']);  
+      } else {
+        this.isAuthenticated = false;
+        this.router.navigate(['/']);
+      }
+    })
+  }
+
+  getAuth() {
+    return this.isAuthenticated;
+  }
   signOut() {
-    this.afAuth.auth.signOut().then(() => {
-      console.log('user logout!' + this.isAuthenticated);
-      this.router.navigate(['/']);
-    });
+   this.afAuth.auth.signOut();
   }
 
 }

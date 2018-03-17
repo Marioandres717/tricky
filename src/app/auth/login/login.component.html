@@ -2,17 +2,19 @@
 <div class="container-fluid">
   <div class="row wrapper">
       <div class="col-lg-4 col-md-4">
-          <form [formGroup]="signUp" (ngSubmit)="onSubmit(signUp)" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px">
+          <form [formGroup]="signUp" (ngSubmit)="onSubmitRegistration(signUp)" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px">
             <mat-form-field>
               <input matInput type="email" formControlName="email" placeholder="Your email">
+              <mat-error>Email is invalid.</mat-error>
             </mat-form-field>
   
             <mat-form-field hintLabel="Should be at least 6 characters long">
               <input matInput type="password" formControlName="password" placeholder="Your password" minlength="6">
+              <mat-hint align="end">{{signUp.value.password.length}} / 6</mat-hint>
               <mat-error>has to be 6 characters long.</mat-error>
             </mat-form-field>
   
-            <button mat-raised-button color="primary" type="submit">Submit</button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="signUp.invalid">Sign Up</button>
             <!--<button (click)="googleLogin()">-->
               <!--<i class="fa fa-google"></i> Connect Google-->
             <!--</button>-->
@@ -20,25 +22,13 @@
         </div>
     <div class="col-lg-8 col-md-8 col-sm-8">
       <section class="signup-form">
-          <form fxLayout="column"
-                fxLayoutAlign="center center"
-                fxLayoutGap="10px"
-                [formGroup]="login"
-                (ngSubmit)="onSubmit(login)">
+          <form fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px" [formGroup]="login" (ngSubmit)="onSubmitLogin(login)">
             <mat-form-field>
-              <input type="email"
-                     matInput
-                     placeholder="Your email"
-                     formControlName="email">
-              <mat-hint>Enter Your Email</mat-hint>
+              <input type="email" matInput placeholder="Your email" formControlName="email">
               <mat-error>Email is invalid.</mat-error>
             </mat-form-field>
             <mat-form-field>
-              <input type="password"
-                     matInput
-                     placeholder="Your password"
-                     formControlName="password">
-              <mat-hint>Enter Your Password</mat-hint>
+              <input type="password" matInput placeholder="Your password" formControlName="password">
               <mat-error>Invalid Password</mat-error>
             </mat-form-field>
             <button mat-raised-button color="primary" type="submit" [disabled]="login.invalid">Login</button>

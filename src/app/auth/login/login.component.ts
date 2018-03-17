@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
     this.loading = false;
   }
 
-  onSubmit(form: FormGroup) {
+  onSubmitRegistration(form: FormGroup) {
     const email = form.value.email,
           password = form.value.password,
           self = this;
@@ -46,5 +46,9 @@ export class LoginComponent implements OnInit {
       self.loading = false;
       console.log('err');
     });
+  }
+
+  onSubmitLogin(form: FormGroup) {
+    this.auth.loginUser(form.value.email, form.value.password);
   }
 }
