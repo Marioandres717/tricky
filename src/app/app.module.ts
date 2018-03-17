@@ -14,7 +14,7 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './navigation/header/header.component';
 import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.component';
 import { WelcomeComponent } from './welcome/welcome.component';
-import { SignupComponent } from './auth/signup/signup.component';
+// import { SignupComponent } from './auth/signup/signup.component';
 import { LoginComponent } from './auth/login/login.component';
 import { GameComponent } from './game/game.component';
 import { ScoreComponent } from './game/score/score.component';
@@ -32,7 +32,7 @@ import { ChatComponent } from './chat/chat.component';
     HeaderComponent,
     SidenavListComponent,
     WelcomeComponent,
-    SignupComponent,
+    // SignupComponent,
     LoginComponent,
     GameComponent,
     ScoreComponent,

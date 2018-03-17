@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {AuthService} from '../auth.service';
+import {Router} from '@angular/router';
 
 interface Login {
   email: string;
@@ -13,16 +15,36 @@ interface Login {
 })
 export class LoginComponent implements OnInit {
   login: FormGroup;
-  constructor(private fb: FormBuilder) { }
+  signUp: FormGroup;
+  loading: boolean;
+  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) { }
 
   ngOnInit() {
     this.login = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });
+
+    this.signUp = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required]
+    });
+
+    this.loading = false;
   }
 
-  onSubmit({value, valid}: {value: Login, valid: boolean}) {
-    console.log(value, valid);
+  onSubmit(form: FormGroup) {
+    const email = form.value.email,
+          password = form.value.password,
+          self = this;
+
+    this.loading = true;
+    this.auth.createNewUser(email, password).then(function() {
+      self.loading = false;
+      self.router.navigate(['']);
+    }, function(err) {
+      self.loading = false;
+      console.log('err');
+    });
   }
 }

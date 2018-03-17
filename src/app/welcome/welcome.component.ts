@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import * as firebase from 'firebase/app';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-welcome',
@@ -6,10 +8,10 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./welcome.component.css']
 })
 export class WelcomeComponent implements OnInit {
-
-  constructor() { }
-
+  constructor(private router: Router) { }
   ngOnInit() {
+    const user = firebase.auth().currentUser;
+    console.log(user);
+    user !== null ? this.router.navigate(['/game']) : this.router.navigate(['/login']);
   }
-
 }

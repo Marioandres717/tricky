@@ -35,31 +35,41 @@ export class AuthService {
     });
   }
 
-  googleLogin() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    return this.oAuthLogin(provider);
-  }
-
-  private oAuthLogin(provider) {
-    return this.afAuth.auth.signInWithPopup(provider)
-      .then((credential) => {
-        this.updateUserData(credential.user);
+  public createNewUser(email: string, password: string) {
+    return new Promise((resolve, reject) => {
+      firebase.auth().createUserWithEmailAndPassword(email, password).then(function(data) {
+        resolve(data);
+      }, function(err) {
+        reject(err);
       });
+    });
   }
 
-  private updateUserData(user) {
-    // Sets user data to firestore on login
-  const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
+  // googleLogin() {
+  //   const provider = new firebase.auth.GoogleAuthProvider();
+  //   return this.oAuthLogin(provider);
+  // }
 
-  const data: User = {
-    uid: user.uid,
-    email: user.email,
-    displayName: user.displayName,
-    photoURL: user.photoURL
-  };
-  // Stores in the db
-  return userRef.set(Object.assign({}, data), {merge: true});
- }
+  // private oAuthLogin(provider) {
+  //   return this.afAuth.auth.signInWithPopup(provider)
+  //     .then((credential) => {
+  //       this.updateUserData(credential.user);
+  //     });
+  // }
+
+ //  private updateUserData(user) {
+ //    // Sets user data to firestore on login
+ //  const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
+ //
+ //  const data: User = {
+ //    uid: user.uid,
+ //    email: user.email,
+ //    displayName: user.displayName,
+ //    photoURL: user.photoURL
+ //  };
+ //  // Stores in the db
+ //  return userRef.set(Object.assign({}, data), {merge: true});
+ // }
 
   signOut() {
     this.afAuth.auth.signOut().then(() => {
