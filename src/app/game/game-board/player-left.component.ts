@@ -3,12 +3,12 @@ import {MAT_DIALOG_DATA} from '@angular/material';
 
 @Component({
   selector: 'app-player-left',
-  template: `<h1 mat-dialog-title>You have won!</h1>
-                <mat-dialog-content>
+  template: `<h1 mat-dialog-title fxFlexAlign="center center">You have won!</h1>
+                <mat-dialog-content fxFlexAlign="center center">
                   <p>{{passedData.opponentInfo}}</p>
                 </mat-dialog-content>
                 <mat-dialog-actions>
-                  <button mat-button>YAY!</button>
+                  <button mat-button [mat-dialog-close]="true" fxFlexAlign="center center">YAY!</button>
                 </mat-dialog-actions>`
 })
 export class PlayerLeftComponent {

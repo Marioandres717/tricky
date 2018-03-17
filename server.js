@@ -86,7 +86,7 @@ setInterval(function(){
   playerTwo.gameID = gameID;
   //TEST MESSAGE
   console.log(waitingQueue.length);
-  io.to(gameID).emit('welcome room', {msg: `hi from room ${gameID}`});
+  io.to(gameID).emit('welcome room', {msg: 'hi from room ' + gameID });
 
 },2000);
 
