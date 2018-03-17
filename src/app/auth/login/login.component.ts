@@ -44,7 +44,7 @@ export class LoginComponent implements OnInit {
     this.loading = true;
     this.auth.createNewUser(email, password).then(function() {
       self.loading = false;
-      // self.router.navigate(['/game']);
+      self.router.navigate(['/home']);
     }, function(err) {
       self.loading = false;
       console.log('err');
@@ -52,7 +52,15 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmitLogin(form: FormGroup) {
-    this.auth.loginUser(form.value.email, form.value.password);
+    const self = this;
+    this.loading = true;
+    this.auth.loginUser(form.value.email, form.value.password).then(() => {
+      this.loading = true;
+      self.router.navigate(['/home']);
+    }, (err) => {
+      this.loading = true;
+      console.log('err');
+    });
   }
 
   googleLogin() {

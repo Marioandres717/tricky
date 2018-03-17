@@ -51,15 +51,16 @@ export class AuthService {
   }
 
   public loginUser(email: string, password: string) {
-    this.afAuth.auth.signInWithEmailAndPassword(email, password).then( (credential) => {})
-    .catch(err => {
-      console.log('something is wrong!', err.message);
-    })
+    return new Promise((resolve, reject) => {
+      this.afAuth.auth.signInWithEmailAndPassword(email, password).then((data) => {
+        resolve(data);
+      }, (err) => {
+        resolve(err);
+      });
+    });
   }
 
- 
-
-  googleLogin() {
+  public googleLogin() {
     const provider = new firebase.auth.GoogleAuthProvider();
     return this.oAuthLogin(provider);
   }
@@ -73,39 +74,26 @@ export class AuthService {
 
   private updateUserData(user) {
     // Sets user data to firestore on login
-  const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
- 
-  const data: User = {
-    uid: user.uid,  
-    email: user.email,
-    displayName: user.displayName,
-    photoURL: user.photoURL
-  };
-  // Stores in the db
-  return userRef.set(Object.assign({}, data), {merge: true});
- }
-
-  checkForAuth() {
-    this.afAuth.authState.subscribe(user => {
-      if (user) {
-        this.isAuthenticated = true;
-        this.authChange.next(true);
-        console.log('the user is logged in!' + user.email);
-        this.router.navigate(['/game']);  
-      } else {
-        this.isAuthenticated = false;
-        this.authChange.next(false);
-        this.router.navigate(['/']);
-      }
-    })
+    const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
+    const data: User = {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+        photoURL: user.photoURL
+    };
+      // Stores in the db
+      return userRef.set(Object.assign({}, data), {merge: true});
   }
 
-  getAuth() {
+  public checkForAuth() {
+    this.afAuth.authState.subscribe(user => {
+      user ? this.isAuthenticated = true : this.isAuthenticated = false;
+    });
     return this.isAuthenticated;
   }
-  signOut() {
-  this.authChange.next(false);
-   this.afAuth.auth.signOut();
-  }
 
+  signOut() {
+    this.authChange.next(false);
+    this.afAuth.auth.signOut();
+  }
 }

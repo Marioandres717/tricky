@@ -4,9 +4,11 @@ import {RouterModule, Routes} from '@angular/router';
 import {LoginComponent} from './auth/login/login.component';
 import {GameComponent} from './game/game.component';
 import {AuthGuard} from './auth/auth.guard';
+import {HomeComponent} from "./home/home.component";
 
 const routes: Routes = [
   {path: '', component: LoginComponent},
+  {path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
   {path: 'game', component: GameComponent, canActivate: [AuthGuard] }
 ];
 @NgModule({

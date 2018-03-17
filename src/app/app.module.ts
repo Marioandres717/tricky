@@ -21,6 +21,7 @@ import { GameBoardComponent } from './game/game-board/game-board.component';
 import { PlayerLeftComponent } from './game/game-board/player-left.component';
 import { NewGameComponent } from './game/new-game/new-game.component';
 import { ChatComponent } from './chat/chat.component';
+import { HomeComponent } from './home/home.component';
 
 
 
@@ -36,6 +37,7 @@ import { ChatComponent } from './chat/chat.component';
     PlayerLeftComponent,
     NewGameComponent,
     ChatComponent,
+    HomeComponent,
   ],
   imports: [
     BrowserModule,
