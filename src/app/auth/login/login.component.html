@@ -7,6 +7,12 @@
               <input matInput type="email" formControlName="email" placeholder="Your email">
               <mat-error>Email is invalid.</mat-error>
             </mat-form-field>
+
+            <mat-form-field hintLabel="Should be at least 4 characters long">
+              <input matInput type="username" formControlName="username" placeholder="Your username">
+              <mat-hint align="end">{{signUp.value.username.length}} / 4</mat-hint>
+              <mat-error>has to be 4 characters long.</mat-error>
+            </mat-form-field>
   
             <mat-form-field hintLabel="Should be at least 6 characters long">
               <input matInput type="password" formControlName="password" placeholder="Your password" minlength="6">
@@ -21,12 +27,12 @@
             </mat-form-field>
 
             <div><h5>Gender</h5></div>
-            <mat-radio-group>
+            <mat-radio-group formControlName="gender">
                 <mat-radio-button value="1">Male</mat-radio-button>
                 <mat-radio-button value="2">Female</mat-radio-button>
             </mat-radio-group>
   
-            <button mat-raised-button color="primary" type="submit" [disabled]="signUp.invalid">Sign Up</button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="!signUp.valid">Sign Up</button>
             <button mat-raised-button color="warn" (click)="googleLogin()">Connect Google</button>
           </form>
         </div>
@@ -41,7 +47,7 @@
               <input type="password" matInput placeholder="Your password" formControlName="password">
               <mat-error>Invalid Password</mat-error>
             </mat-form-field>
-            <button mat-raised-button color="primary" type="submit" [disabled]="login.invalid">Login</button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="!login.valid">Login</button>
           </form>
         </section>
     </div>

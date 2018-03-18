@@ -25,6 +25,7 @@ import { NewGameComponent } from './game/new-game/new-game.component';
 import { ChatComponent } from './chat/chat.component';
 import { HomeComponent } from './home/home.component';
 import { AuthService } from './auth/auth.service';
+import {UiService} from './shared/ui.service';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,7 @@ import { AuthService } from './auth/auth.service';
     AuthModule
   ],
   entryComponents: [PlayerLeftComponent],
-  providers: [GameService, AuthService],
+  providers: [GameService, AuthService,  UiService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

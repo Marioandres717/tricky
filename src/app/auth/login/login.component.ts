@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormGroup, Validators, FormControl} from '@angular/forms';
 import {AuthService} from '../auth.service';
 import {Router} from '@angular/router';
+import { UiService } from '../../shared/ui.service';
+
 
 interface Login {
   email: string;
@@ -17,23 +19,23 @@ export class LoginComponent implements OnInit {
   login: FormGroup;
   signUp: FormGroup;
   loading: boolean;
-  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) { }
+  constructor( private auth: AuthService, private router: Router,  private uiService: UiService ) { }
 
   ngOnInit() {
-    this.login = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required]
+    this.login = new FormGroup({
+      email: new FormControl('', Validators.compose([Validators.required, Validators.email] )),
+      password: new FormControl('', Validators.compose([Validators.required]))
     });
 
-    this.signUp = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      username: ['',Validators.required, Validators.minLength(4), Validators.maxLength(10)],
-      password: ['', Validators.required, Validators.minLength(6)],
-      birthday: ['', Validators.required],
-      gender: ['', Validators.required]
+    this.signUp = new FormGroup({
+      email: new FormControl('', Validators.compose([Validators.required, Validators.email] )),
+      username: new FormControl('', Validators.compose([ Validators.required, Validators.minLength(4), Validators.maxLength(10)])),
+      password: new FormControl('', Validators.compose([Validators.required, Validators.minLength(6)])),
+      birthday: new FormControl ('', Validators.compose([Validators.required])),
+      gender: new FormControl ('', Validators.compose([Validators.required]))
     });
 
-    this.loading = false;
+    // this.loading = false;
   }
 
   onSubmitRegistration(form: FormGroup) {
@@ -42,24 +44,25 @@ export class LoginComponent implements OnInit {
           self = this;
 
     this.loading = true;
-    this.auth.createNewUser(email, password).then(function() {
-      self.loading = false;
+    this.auth.createNewUser(email, password).then((data) => {
+      // self.loading = false;
+      // console.log(data);
       self.router.navigate(['/home']);
-    }, function(err) {
+    }, (err) => {
+      this.uiService.showSnackBar(err.message, null, 3000);
       self.loading = false;
-      console.log('err');
     });
   }
 
   onSubmitLogin(form: FormGroup) {
     const self = this;
-    this.loading = true;
-    this.auth.loginUser(form.value.email, form.value.password).then(() => {
-      this.loading = true;
+    // this.loading = true;
+    this.auth.loginUser(form.value.email, form.value.password).then((data) => {
+      // this.loading = true;
       self.router.navigate(['/home']);
     }, (err) => {
-      this.loading = true;
-      console.log('err');
+      this.uiService.showSnackBar(err.message, null, 3000);
+      // this.loading = true;
     });
   }
 

@@ -9,6 +9,7 @@ import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/switchMap';
 import { Subject } from 'rxjs/Subject';
 
+
 interface User {
   uid: string;
   email: string;
@@ -27,7 +28,7 @@ export class AuthService {
 
   constructor(private afAuth: AngularFireAuth,
               private afs: AngularFirestore,
-              private router: Router) {
+              private router: Router ) {
 
     /// Get auth data, then get Firestore user document || null
     // We want to define the user observable so any part of the app can subscribe to it and receive updates on real-time
@@ -42,9 +43,9 @@ export class AuthService {
 
   public createNewUser(email: string, password: string) {
     return new Promise((resolve, reject) => {
-      firebase.auth().createUserWithEmailAndPassword(email, password).then(function(data) {
+      this.afAuth.auth.createUserWithEmailAndPassword(email, password).then((data) => {
         resolve(data);
-      }, function(err) {
+      }, (err) => {
         reject(err);
       });
     });
@@ -55,7 +56,7 @@ export class AuthService {
       this.afAuth.auth.signInWithEmailAndPassword(email, password).then((data) => {
         resolve(data);
       }, (err) => {
-        resolve(err);
+        reject(err);
       });
     });
   }
@@ -107,8 +108,6 @@ export class AuthService {
   }
 
   signOut() {
-    this.authChange.next(false);
     this.afAuth.auth.signOut();
-    this.router.navigate(['/']);
   }
 }
