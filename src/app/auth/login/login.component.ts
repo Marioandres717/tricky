@@ -34,29 +34,21 @@ export class LoginComponent implements OnInit {
       birthday: new FormControl ('', Validators.compose([Validators.required])),
       gender: new FormControl ('', Validators.compose([Validators.required]))
     });
-
-    // this.loading = false;
   }
 
   onSubmitRegistration(form: FormGroup) {
-    const email = form.value.email,
-          password = form.value.password,
-          self = this;
-
-    this.loading = true;
-    this.auth.createNewUser(email, password).then((data) => {}, (err) => {
+    this.auth.createNewUser(form.value.email, form.value.password).then((data) => {
+      this.router.navigate(['/home']);
+    }, (err) => {
       this.uiService.showSnackBar(err.message, null, 3000);
-      // self.loading = false;
     });
   }
 
   onSubmitLogin(form: FormGroup) {
-    // this.loading = true;
     this.auth.loginUser(form.value.email, form.value.password).then((data) => {
-          // this.loading = true;
+          this.router.navigate(['/home']);
     }, (err) => {
       this.uiService.showSnackBar(err.message, null, 3000);
-      // this.loading = true;
     });
   }
 

@@ -26,23 +26,18 @@ export class AuthService {
   private isAuthenticated = false;
   authChange = new Subject<boolean>();
 
-  constructor(private afAuth: AngularFireAuth,
-              private afs: AngularFirestore,
-              private router: Router ) {
-
-              this.afAuth.authState.subscribe(user => {
-                if (user) {
-                  this.isAuthenticated = true;
-                  this.authChange.next(true);
-                  console.log('esta llamando todo esto?');
-                  this.router.navigate(['/home']);
-                } else {
-                  this.isAuthenticated = false;
-                  this.authChange.next(false);
-                  this.router.navigate(['/']);
-                }
-              });
+  constructor(private afAuth: AngularFireAuth, private afs: AngularFirestore ) {
+    this.afAuth.authState.subscribe(user => {
+      if (user) {
+        this.isAuthenticated = true;
+        this.authChange.next(true);
+      } else {
+        this.isAuthenticated = false;
+        this.authChange.next(false);
+      }
+    });
   }
+    
 
   public createNewUser(email: string, password: string) {
     return new Promise((resolve, reject) => {
@@ -90,6 +85,7 @@ export class AuthService {
   }
 
   public getAuthState() {
+    console.log('llamando esta mierda');
     return this.isAuthenticated;
   }
 

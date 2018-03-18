@@ -7,10 +7,12 @@ import {AuthGuard} from './auth/auth.guard';
 import {HomeComponent} from "./home/home.component";
 
 const routes: Routes = [
-  {path: '', component: LoginComponent},
   {path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
-  {path: 'game', component: GameComponent, canActivate: [AuthGuard] }
+  {path: 'game/:id', component: GameComponent, canActivate: [AuthGuard] },
+  {path: '', component: LoginComponent},
+  {path: '**', component: LoginComponent},
 ];
+
 @NgModule({
   imports: [
     CommonModule,
