@@ -6,7 +6,6 @@ import {AngularFireAuth} from 'angularfire2/auth';
 import {AngularFirestore, AngularFirestoreDocument} from 'angularfire2/firestore';
 
 import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/operator/switchMap';
 import { Subject } from 'rxjs/Subject';
 
 
@@ -85,7 +84,6 @@ export class AuthService {
   }
 
   public getAuthState() {
-    console.log('llamando esta mierda');
     return this.isAuthenticated;
   }
 

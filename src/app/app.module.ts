@@ -26,6 +26,7 @@ import { ChatComponent } from './chat/chat.component';
 import { HomeComponent } from './home/home.component';
 import { AuthService } from './auth/auth.service';
 import {UiService} from './shared/ui.service';
+import { PageNotFoundComponent } from './navigation/not-found.component';
 
 @NgModule({
   declarations: [
@@ -40,12 +41,12 @@ import {UiService} from './shared/ui.service';
     NewGameComponent,
     ChatComponent,
     HomeComponent,
+    PageNotFoundComponent
   ],
   imports: [
     MatTableModule,
     MatPaginatorModule,
     BrowserModule,
-    AppRoutingModule,
     MaterialModule,
     FlexLayoutModule,
     FormsModule,
@@ -53,7 +54,8 @@ import {UiService} from './shared/ui.service';
     BrowserAnimationsModule,
     ReactiveFormsModule,
     AngularFireModule.initializeApp(environment.firebase),
-    AuthModule
+    AuthModule,
+    AppRoutingModule,
   ],
   entryComponents: [PlayerLeftComponent],
   providers: [GameService, AuthService,  UiService],

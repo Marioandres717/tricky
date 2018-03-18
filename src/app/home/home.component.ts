@@ -1,5 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator, MatTableDataSource} from '@angular/material';
+import { AuthService } from '../auth/auth.service';
 
 export interface Table {
   id: number;
@@ -36,17 +37,17 @@ export class HomeComponent implements OnInit {
   displayedColumns = ['user', 'created', 'country', 'join'];
   gameTable = new MatTableDataSource<Table>(GAME_TABLE);
 
+  constructor(private auth: AuthService) {}
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   ngAfterViewInit() {
     this.gameTable.paginator = this.paginator;
   }
 
-  constructor() {}
-
   ngOnInit() {}
 
   createGame(gameId: string) {
     console.log(gameId);
+    console.log(this.auth.getAuthState());
   }
 }
