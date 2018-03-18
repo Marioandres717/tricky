@@ -30,15 +30,18 @@ export class AuthService {
               private afs: AngularFirestore,
               private router: Router ) {
 
-    /// Get auth data, then get Firestore user document || null
-    // We want to define the user observable so any part of the app can subscribe to it and receive updates on real-time
-    // this.user = this.afAuth.authState.switchMap(user => {
-    //   if (user) {
-    //     return this.afs.doc<User>(`users/${user.uid}`).valueChanges();
-    //   } else {
-    //     return Observable.of(null);
-    //   }
-    // });
+              this.afAuth.authState.subscribe(user => {
+                if (user) {
+                  this.isAuthenticated = true;
+                  this.authChange.next(true);
+                  console.log('esta llamando todo esto?');
+                  this.router.navigate(['/home']);
+                } else {
+                  this.isAuthenticated = false;
+                  this.authChange.next(false);
+                  this.router.navigate(['/']);
+                }
+              });
   }
 
   public createNewUser(email: string, password: string) {
@@ -86,24 +89,7 @@ export class AuthService {
       return userRef.set(Object.assign({}, data), {merge: true});
   }
 
-  public checkForAuth() {
-    this.afAuth.authState.subscribe(user => {
-      if (user) {
-        this.isAuthenticated = true;
-        this.authChange.next(true);
-        console.log('esta llamando todo esto?');
-        this.router.navigate(['/home']);
-      } else {
-        this.isAuthenticated = false;
-        this.authChange.next(false);
-        this.router.navigate(['/']);
-      }
-    });
-    return this.isAuthenticated;
-  }
-
   public getAuthState() {
-    console.log('esto lo llama el guard');
     return this.isAuthenticated;
   }
 

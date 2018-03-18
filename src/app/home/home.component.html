@@ -1,7 +1,8 @@
 <div class="container">
   <div class="row">
-    <div class="col-lg-2 col-md-2">
-
+    <div class="col-lg-2 col-md-2 espacio">
+      <input type="text" placeholder="create Game" #gameId>
+      <button mat-raised-button color='primary' (click)="createGame(gameId.value)">Create Game</button>
     </div>
     <div class="col-lg-10 col-md-10">
       <mat-table [dataSource]='gameTable'>

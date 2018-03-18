@@ -44,22 +44,16 @@ export class LoginComponent implements OnInit {
           self = this;
 
     this.loading = true;
-    this.auth.createNewUser(email, password).then((data) => {
-      // self.loading = false;
-      // console.log(data);
-      self.router.navigate(['/home']);
-    }, (err) => {
+    this.auth.createNewUser(email, password).then((data) => {}, (err) => {
       this.uiService.showSnackBar(err.message, null, 3000);
-      self.loading = false;
+      // self.loading = false;
     });
   }
 
   onSubmitLogin(form: FormGroup) {
-    const self = this;
     // this.loading = true;
     this.auth.loginUser(form.value.email, form.value.password).then((data) => {
-      // this.loading = true;
-      self.router.navigate(['/home']);
+          // this.loading = true;
     }, (err) => {
       this.uiService.showSnackBar(err.message, null, 3000);
       // this.loading = true;

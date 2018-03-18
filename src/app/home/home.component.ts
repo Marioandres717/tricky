@@ -45,4 +45,8 @@ export class HomeComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {}
+
+  createGame(gameId: string) {
+    console.log(gameId);
+  }
 }
