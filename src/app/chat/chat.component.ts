@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {GameService} from '../game/game.service';
 import {Subscription} from 'rxjs/Subscription';
 import { DatePipe } from '@angular/common';
+import {SocketService} from '../shared/socket.service';
 
 @Component({
   selector: 'app-chat',
@@ -13,10 +13,10 @@ export class ChatComponent implements OnInit, OnDestroy {
   messageSubscription: Subscription;
   timestamp = Date.now();
 
-  constructor(private gameService: GameService) { }
+  constructor(private socketService: SocketService) { }
 
   ngOnInit() {
-    this.messageSubscription = this.gameService.messageReceived().subscribe(OtherUserMsg => this.messages.push(OtherUserMsg));
+    this.messageSubscription = this.socketService.messageReceived().subscribe(OtherUserMsg => this.messages.push(OtherUserMsg));
   }
 
   ngOnDestroy() {
@@ -25,6 +25,6 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   sendMessage(message: string) {
     this.messages.push(message);
-    this.gameService.messageSend(message);
+    this.socketService.messageSend(message);
   }
 }

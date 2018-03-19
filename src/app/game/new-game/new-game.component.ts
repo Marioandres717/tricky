@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {SocketService} from '../../shared/socket.service';
 import {GameService} from '../game.service';
 
 @Component({
@@ -9,7 +10,7 @@ import {GameService} from '../game.service';
 })
 export class NewGameComponent implements OnInit {
   gameSelected: FormGroup;
-  constructor(private fb: FormBuilder, private gameService: GameService) { }
+  constructor(private fb: FormBuilder, private socketService: SocketService, private gameService: GameService) { }
 
   ngOnInit() {
     this.gameSelected = this.fb.group({selectedGame: ''});
@@ -18,6 +19,6 @@ export class NewGameComponent implements OnInit {
   setGame(form) {
     console.log(form.value.selectedGame);
     this.gameService.selectNewGame(form.value.selectedGame);
-    this.gameService.joinGame(form.value.selectedGame);
+    this.socketService.joinGame(form.value.selectedGame);
   }
 }

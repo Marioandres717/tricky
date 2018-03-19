@@ -1,9 +1,9 @@
 <div class="container">
   <div class="row">
-    
+
     <div class="col-lg-2 col-md-2 espacio">
       <input type="text" placeholder="create Game" #gameId>
-      <button mat-raised-button color='primary' (click)="createGame(gameId.value)">Create Game</button>
+      <button mat-raised-button color='primary' (click)="onSubmitNewGame(gameId.value)">Create Game</button>
     </div>
 
     <div class="col-lg-10 col-md-10">
@@ -15,17 +15,17 @@
         </ng-container>
         <ng-container matColumnDef="created">
           <mat-header-cell *matHeaderCellDef> Created </mat-header-cell>
-          <mat-cell *matCellDef="let user"> {{user.created}} </mat-cell>
+          <mat-cell *matCellDef="let user"> {{user.created | date: 'short'}}</mat-cell>
         </ng-container>
-        <ng-container matColumnDef="country">
-          <mat-header-cell *matHeaderCellDef> Country </mat-header-cell>
-          <mat-cell *matCellDef="let user"> {{user.country}} </mat-cell>
+        <ng-container matColumnDef="number of players">
+          <mat-header-cell *matHeaderCellDef> Number of players </mat-header-cell>
+          <mat-cell *matCellDef="let user"> {{user.numberOfPlayers}} / 2</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="join">
           <mat-header-cell *matHeaderCellDef> Join Session </mat-header-cell>
           <mat-cell *matCellDef="let user">
-            <button mat-button color="primary">Join</button>
+            <button mat-button color="primary" (click)="joinGame(user.id)">Join</button>
           </mat-cell>
         </ng-container>
 

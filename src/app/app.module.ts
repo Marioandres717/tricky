@@ -17,7 +17,6 @@ import { HeaderComponent } from './navigation/header/header.component';
 import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.component';
 import { LoginComponent } from './auth/login/login.component';
 import { GameComponent } from './game/game.component';
-import { ScoreComponent } from './game/score/score.component';
 import {GameService} from './game/game.service';
 import { GameBoardComponent } from './game/game-board/game-board.component';
 import { PlayerLeftComponent } from './game/game-board/player-left.component';
@@ -26,7 +25,8 @@ import { ChatComponent } from './chat/chat.component';
 import { HomeComponent } from './home/home.component';
 import { AuthService } from './auth/auth.service';
 import {UiService} from './shared/ui.service';
-import { PageNotFoundComponent } from './navigation/not-found.component';
+import { PageNotFoundComponent } from './not-found.component';
+import { SocketService } from './shared/socket.service';
 
 @NgModule({
   declarations: [
@@ -35,7 +35,6 @@ import { PageNotFoundComponent } from './navigation/not-found.component';
     SidenavListComponent,
     LoginComponent,
     GameComponent,
-    ScoreComponent,
     GameBoardComponent,
     PlayerLeftComponent,
     NewGameComponent,
@@ -58,7 +57,7 @@ import { PageNotFoundComponent } from './navigation/not-found.component';
     AppRoutingModule,
   ],
   entryComponents: [PlayerLeftComponent],
-  providers: [GameService, AuthService,  UiService],
+  providers: [GameService, AuthService,  UiService, SocketService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

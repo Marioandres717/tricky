@@ -1,63 +1,73 @@
 import { Injectable } from '@angular/core';
-import { BlockModel} from './block.model';
-import {GameModel} from './game.model';
 import {Subject} from 'rxjs/Subject';
-import io from 'socket.io-client';
-import {Observable} from 'rxjs/Observable';
-import {observable} from 'rxjs/symbol/observable';
+import {AngularFirestore} from 'angularfire2/firestore';
+import {Subscription} from 'rxjs/Subscription';
+import {Table} from './table.model';
+import 'rxjs/operator/map';
+import {UiService} from '../shared/ui.service';
+import {AuthService} from '../auth/auth.service';
 
 @Injectable()
 export class GameService {
-  newGame = new GameModel;
-  blocks: BlockModel[] = [];
   OngoingGame$ = new Subject<boolean>();
+  private firebaseSubscriptions: Subscription[] = [];
+  private gameTablesAvailable: Table[] = [];
+  gameTableUpdate = new Subject<Table[]>();
 
-  private socket = io.connect('http://localhost:8080', {'forceNew': true});
+  constructor(private db: AngularFirestore, private uiService: UiService, private authService: AuthService) {}
 
-  joinGame(data: string) {
-    this.socket.emit('join game', {gameType: data});
-  }
-
-  leftGame() {
-    const PlayerLeft = new Observable<string>(observer => {
-      this.socket.on('opponent left', (message) => {
-        observer.next(message);
+  fetchAvailableGames() {
+    this.firebaseSubscriptions.push(this.db
+      .collection('gameTables')
+      .snapshotChanges()
+      .map(gameArray => {
+        return gameArray.map(game => {
+          return {
+            id: game.payload.doc.data().id,
+            user: game.payload.doc.data().user,
+            numberOfPlayers: game.payload.doc.data().numberOfPlayers,
+            created: game.payload.doc.data().created
+          };
       });
-      return () => { this.socket.disconnect(); };
-    });
-    return PlayerLeft;
+    }).subscribe((gamesAvailable: Table[]) => {
+      this.gameTablesAvailable = gamesAvailable;
+      this.gameTableUpdate.next([...this.gameTablesAvailable]);
+      }, error => {
+        this.uiService.showSnackBar('fetching game tables failed, please try again later', null, 3000);
+        this.gameTableUpdate.next(null);
+      }));
   }
 
-  displayMove() {
-    const opponentsMove = new Observable<number>(observer => {
-      this.socket.on('opponent move', (blockId) => {
-        observer.next(blockId);
-      });
-      return () => { this.socket.disconnect(); };
-    });
-    return opponentsMove;
+  newGame(gameID: string) {
+    const userInfo = this.authService.userInfo();
+    const info: Table = {
+      id: +gameID,
+      user: userInfo.email,
+      numberOfPlayers: 1,
+      created: new Date()
+    };
+    this.createNewGameTable(info);
   }
 
-  makeMove(blockId: number) {
-    this.socket.emit('player move', blockId);
+
+  private createNewGameTable(newTable: Table) {
+    this.db.collection('gameTables').add(newTable);
   }
 
-  messageSend(messageContent: string) {
-    // HERE WE HAVE TO ADD THE USER INFORMATION & TIME STAMP
-    this.socket.emit('send-message', messageContent);
-  }
 
-  messageReceived() {
-    const MessageFromOtherUSer = new Observable<string>(observer => {
-      this.socket.on('receive-message', (message) => {
-        observer.next(message);
-      });
-      return () => { this.socket.disconnect(); };
-    });
-    return MessageFromOtherUSer;
-  }
 
-  selectNewGame(value: string) {
+
+
+
+
+
+
+
+
+
+
+
+    selectNewGame(value: string) {
     if (value) {
       this.OngoingGame$.next(true);
     } else {
@@ -65,47 +75,7 @@ export class GameService {
     }
   }
 
-  initializeGame() {
-    this.newGame.gameId = Math.round(Math.random() * 10 + 1);
-    this.newGame.turn = 0;
-    this.newGame.Winner = null;
-    this.newGame.Draw = null;
-    // console.log(this.newGame.gameId);
-    return this.newGame;
-  }
-
-  initializeBlocks(): BlockModel[] {
-    for (let i = 0; i < 9; i++) {
-      const new_block = new BlockModel();
-      new_block.blockId = i;
-      new_block.free = true;
-      new_block.userId = null;
-      new_block.value = '';
-      this.blocks.push(new_block);
-    }
-    return this.blocks;
-  }
-
-  playerClick(position: number) {
-    if (this.blocks[position].free) {
-      if (this.newGame.turn === 0) {
-        this.blocks[position].value = 'X';
-        this.newGame.turn = 1;
-        this.blocks[position].userId = 12345;
-        this.blocks[position].free = false;
-
-        this.makeMove(position);
-        // this.invalidMessage = '';
-      } else {
-        this.blocks[position].value = 'O';
-        this.newGame.turn = 0;
-        this.blocks[position].userId = 67890;
-        this.blocks[position].free = false;
-        // this.invalidMessage = '';
-      }
-    } else {
-      // this.invalidMessage = 'The block is being used!';
-    }
-    console.log(this.blocks[position]);
+  cancelSubscriptions() {
+    this.firebaseSubscriptions.forEach(sub => sub.unsubscribe());
   }
 }
