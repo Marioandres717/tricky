@@ -1,12 +1,12 @@
 <div class="container">
   <div class="row">
 
-    <div class="col-lg-2 col-md-2 espacio">
+    <div class="col-lg-4 col-md-4 espacio">
       <input type="text" placeholder="create Game" #gameId>
       <button mat-raised-button color='primary' (click)="onSubmitNewGame(gameId.value)">Create Game</button>
     </div>
 
-    <div class="col-lg-10 col-md-10">
+    <div class="col-lg-8 col-md-8">
       <mat-table [dataSource]='gameTable'>
 
         <ng-container matColumnDef="user">
@@ -25,7 +25,7 @@
         <ng-container matColumnDef="join">
           <mat-header-cell *matHeaderCellDef> Join Session </mat-header-cell>
           <mat-cell *matCellDef="let user">
-            <button mat-button color="primary" (click)="joinGame(user.id)">Join</button>
+            <button mat-button color="primary" [disabled]="user.numberOfPlayers>= 2" (click)="joinGame(user.id, user.name)">Join</button>
           </mat-cell>
         </ng-container>
 

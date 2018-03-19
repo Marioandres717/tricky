@@ -36,7 +36,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/game/', gameID]);
   }
 
-  joinGame(gameID: string) {
+  joinGame(docId: any, gameID: string) {
+    this.gameService.updateTableState(docId);
     this.socketService.joinGame(gameID);
     this.router.navigate(['/game/', gameID]);
   }

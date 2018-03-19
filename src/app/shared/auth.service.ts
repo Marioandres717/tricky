@@ -36,7 +36,7 @@ export class AuthService {
       }
     });
   }
-    
+
   public userInfo() {
     return this.user = firebase.auth().currentUser;
   }

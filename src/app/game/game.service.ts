@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import {Subject} from 'rxjs/Subject';
-import {AngularFirestore} from 'angularfire2/firestore';
+import {AngularFirestore, AngularFirestoreDocument} from 'angularfire2/firestore';
 import {Subscription} from 'rxjs/Subscription';
 import {Table} from './table.model';
 import 'rxjs/operator/map';
 import {UiService} from '../shared/ui.service';
-import {AuthService} from '../auth/auth.service';
+import {AuthService} from '../shared/auth.service';
 
 @Injectable()
 export class GameService {
@@ -16,14 +16,15 @@ export class GameService {
 
   constructor(private db: AngularFirestore, private uiService: UiService, private authService: AuthService) {}
 
-  fetchAvailableGames() {
+  fetchAvailableGames(): void {
     this.firebaseSubscriptions.push(this.db
       .collection('gameTables')
       .snapshotChanges()
       .map(gameArray => {
         return gameArray.map(game => {
           return {
-            id: game.payload.doc.data().id,
+            id: game.payload.doc.id,
+            name: game.payload.doc.data().name,
             user: game.payload.doc.data().user,
             numberOfPlayers: game.payload.doc.data().numberOfPlayers,
             created: game.payload.doc.data().created
@@ -38,10 +39,11 @@ export class GameService {
       }));
   }
 
-  newGame(gameID: string) {
+  newGame(gameID: string): void {
     const userInfo = this.authService.userInfo();
     const info: Table = {
-      id: +gameID,
+      id: '',
+      name: gameID,
       user: userInfo.email,
       numberOfPlayers: 1,
       created: new Date()
@@ -49,25 +51,15 @@ export class GameService {
     this.createNewGameTable(info);
   }
 
-
-  private createNewGameTable(newTable: Table) {
-    this.db.collection('gameTables').add(newTable);
+  updateTableState(docId: any) {
+   this.db.doc(`gameTables/${docId}`).update({numberOfPlayers: 2});
   }
 
+  createNewGameTable(newTable: Table): void {
+    this.db.collection<Table>('gameTables').add(newTable);
+  }
 
-
-
-
-
-
-
-
-
-
-
-
-
-    selectNewGame(value: string) {
+  selectNewGame(value: string) {
     if (value) {
       this.OngoingGame$.next(true);
     } else {

@@ -1,5 +1,6 @@
 export interface Table {
-  id: number;
+  id: any;
+  name: string;
   user: string;
   numberOfPlayers: number;
   created: Date;

@@ -23,7 +23,7 @@ import { PlayerLeftComponent } from './game/game-board/player-left.component';
 import { NewGameComponent } from './game/new-game/new-game.component';
 import { ChatComponent } from './chat/chat.component';
 import { HomeComponent } from './home/home.component';
-import { AuthService } from './auth/auth.service';
+import { AuthService } from './shared/auth.service';
 import {UiService} from './shared/ui.service';
 import { PageNotFoundComponent } from './not-found.component';
 import { SocketService } from './shared/socket.service';
