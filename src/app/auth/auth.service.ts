@@ -21,11 +21,11 @@ interface User {
 
 @Injectable()
 export class AuthService {
-  user: Observable<User>;
+  user: any;
   private isAuthenticated = false;
   authChange = new Subject<boolean>();
 
-  constructor(private afAuth: AngularFireAuth, private afs: AngularFirestore ) {
+  constructor(private afAuth: AngularFireAuth, private afs: AngularFirestore, private router: Router ) {
     this.afAuth.authState.subscribe(user => {
       if (user) {
         this.isAuthenticated = true;
@@ -37,10 +37,15 @@ export class AuthService {
     });
   }
     
+  public userInfo() {
+    return this.user = firebase.auth().currentUser;
+  }
 
   public createNewUser(email: string, password: string) {
     return new Promise((resolve, reject) => {
       this.afAuth.auth.createUserWithEmailAndPassword(email, password).then((data) => {
+        this.userInfo();
+        this.updateUserData(this.user);
         resolve(data);
       }, (err) => {
         reject(err);
@@ -79,6 +84,7 @@ export class AuthService {
         displayName: user.displayName,
         photoURL: user.photoURL
     };
+     this.router.navigate(['/home']);
       // Stores in the db
       return userRef.set(Object.assign({}, data), {merge: true});
   }

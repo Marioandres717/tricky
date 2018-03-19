@@ -48,6 +48,5 @@ export class HomeComponent implements OnInit {
 
   createGame(gameId: string) {
     console.log(gameId);
-    console.log(this.auth.getAuthState());
   }
 }
