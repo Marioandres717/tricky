@@ -1,4 +1,5 @@
 <mat-card class="example-card" class="mat-elevation-z3">
+
   <mat-card-header *ngFor="let message of messages">
     <div mat-card-avatar class="example-header-image"></div>
     <div class="message-wrapper mat-elevation-z3">
@@ -6,6 +7,7 @@
       <mat-card-subtitle>{{timestamp | date: 'shortTime'}}</mat-card-subtitle>
     </div>
   </mat-card-header>
+
   <mat-card-actions>
     <mat-form-field fxFlex="75%">
       <textarea #messageContent matInput placeholder="Write your message here...." matTextareaAutosize matAutosizeMinRows="1"
@@ -13,4 +15,5 @@
     </mat-form-field>
     <button mat-button (click)="sendMessage(messageContent.value)"><i class="material-icons">send</i></button>
   </mat-card-actions>
+
 </mat-card>

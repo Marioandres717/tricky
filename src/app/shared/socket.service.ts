@@ -8,8 +8,18 @@ export class SocketService {
 
   constructor() { }
 
-  joinGame(data: string) {
-    this.socket.emit('join game', {gameType: data});
+  joinGame(id: string) {
+    this.socket.emit('join game', {gameID: id});
+  }
+
+  newGameStarted() {
+    const newGame = new Observable<string>(observer => {
+      this.socket.on('new game', (welcomeMessage) => {
+        observer.next(welcomeMessage);
+      });
+      return () => { this.socket.disconnect(); };
+    });
+    return newGame;
   }
 
   leftGame() {

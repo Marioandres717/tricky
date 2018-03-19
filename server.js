@@ -37,9 +37,10 @@ io.on('connection', function(socket) {
     socket.on('join game', function(playerInfo) {
       console.log(socket.id);
       socket.name = 'usernames';
-      socket.gameID = null;
-      waitingQueue.push(socket);
-      socket.emit('new-message', 'Hello from the server');
+      socket.gameID = playerInfo.gameID;
+      console.log(socket.gameID, playerInfo.gameID);
+      socket.join(socket.gameID);
+      socket.emit('new game', 'Hello contenders, I am Sonique your moderator.');
     });
 
     socket.on('player move', function (blockId) {
@@ -57,38 +58,38 @@ io.on('connection', function(socket) {
 
 
 
-// FUNCTION FOR CREATING 2 PEOPLE SESSIONS
-setInterval(function(){
-  console.log('The number of Players in the queue are: ' + waitingQueue.length);
-  // if there is only one person in the queue then return
-  if(waitingQueue.length < 2)
-    return;
-
-  //else, there is more than 1 person in the queue
-  //Select randomly the players & dequeue them
-  //Player 1
-  var indexOfPlayer = Math.floor(Math.random()*waitingQueue.length);
-  var playerOne = waitingQueue[indexOfPlayer];
-  waitingQueue.splice(indexOfPlayer, 1);
-
-  //Player 2
-  var indexOfPlayer = Math.floor(Math.random()*waitingQueue.length);
-  var playerTwo = waitingQueue[indexOfPlayer];
-  //Remove player from queue
-  waitingQueue.splice(indexOfPlayer, 1);
-  //Create game id
-  var gameID = 'gameID' + gameNumber++;
-  //Create room for the 2 players (join is a method from socket.io)
-  playerOne.join(gameID);
-  playerTwo.join(gameID);
-  //set gameID property in socket
-  playerOne.gameID = gameID;
-  playerTwo.gameID = gameID;
-  //TEST MESSAGE
-  console.log(waitingQueue.length);
-  io.to(gameID).emit('welcome room', {msg: 'hi from room ' + gameID });
-
-},2000);
+// // FUNCTION FOR CREATING 2 PEOPLE SESSIONS
+// setInterval(function(){
+//   console.log('The number of Players in the queue are: ' + waitingQueue.length);
+//   // if there is only one person in the queue then return
+//   if(waitingQueue.length < 2)
+//     return;
+//
+//   //else, there is more than 1 person in the queue
+//   //Select randomly the players & dequeue them
+//   //Player 1
+//   var indexOfPlayer = Math.floor(Math.random()*waitingQueue.length);
+//   var playerOne = waitingQueue[indexOfPlayer];
+//   waitingQueue.splice(indexOfPlayer, 1);
+//
+//   //Player 2
+//   var indexOfPlayer = Math.floor(Math.random()*waitingQueue.length);
+//   var playerTwo = waitingQueue[indexOfPlayer];
+//   //Remove player from queue
+//   waitingQueue.splice(indexOfPlayer, 1);
+//   //Create game id
+//   var gameID = 'gameID' + gameNumber++;
+//   //Create room for the 2 players (join is a method from socket.io)
+//   playerOne.join(gameID);
+//   playerTwo.join(gameID);
+//   //set gameID property in socket
+//   playerOne.gameID = gameID;
+//   playerTwo.gameID = gameID;
+//   //TEST MESSAGE
+//   console.log(waitingQueue.length);
+//   io.to(gameID).emit('welcome room', {msg: 'hi from room ' + gameID });
+//
+// },2000);
 
 app.get('*', function(req, res) {
   res.sendFile(__dirname + '/dist/index.html');

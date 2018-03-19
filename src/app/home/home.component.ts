@@ -32,9 +32,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   onSubmitNewGame(gameID: string) {
     this.gameService.newGame(gameID);
+    this.socketService.joinGame(gameID);
+    this.router.navigate(['/game/', gameID]);
   }
 
-  joinGame(gameID: number) {
+  joinGame(gameID: string) {
+    this.socketService.joinGame(gameID);
     this.router.navigate(['/game/', gameID]);
   }
 }

@@ -14,10 +14,16 @@ import {SocketService} from '../../shared/socket.service';
 export class GameBoardComponent implements OnInit, OnDestroy {
 
   constructor(private socketService: SocketService, private dialog: MatDialog) { }
+  newGameConnectionSubscription: Subscription;
   opponentMoveSubscription: Subscription;
   opponentLeftSubscription: Subscription;
+  players: any[];
+  testMessage: string[] = ['test1'];
 
   ngOnInit() {
+    this.newGameConnectionSubscription = this.socketService.newGameStarted().subscribe(welcomeMessage => {
+      this.testMessage.push(welcomeMessage);
+    });
 
     this.opponentMoveSubscription = this.socketService.displayMove().subscribe(opponentMove => {
     });
@@ -33,6 +39,7 @@ export class GameBoardComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.newGameConnectionSubscription.unsubscribe();
     this.opponentMoveSubscription.unsubscribe();
     this.opponentLeftSubscription.unsubscribe();
   }
