@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {GameService} from '../game.service';
+import {Blocks, Game, GameService} from '../game.service';
 import {Subscription} from 'rxjs/Subscription';
 import {MatDialog} from '@angular/material';
 import {PlayerLeftComponent} from './player-left.component';
@@ -11,21 +11,34 @@ import {SocketService} from '../../shared/socket.service';
   templateUrl: './game-board.component.html',
   styleUrls: ['./game-board.component.css']
 })
+
 export class GameBoardComponent implements OnInit, OnDestroy {
 
-  constructor(private socketService: SocketService, private dialog: MatDialog) { }
-  newGameConnectionSubscription: Subscription;
+  constructor(private socketService: SocketService, private dialog: MatDialog, private gameService: GameService) { }
   opponentMoveSubscription: Subscription;
   opponentLeftSubscription: Subscription;
-  players: any[];
-  testMessage: string[] = ['test1'];
+  symbolSubscription: Subscription;
+  blocks: Blocks[];
+  game: Game;
+  playerSymbol: string;
 
   ngOnInit() {
-    this.newGameConnectionSubscription = this.socketService.newGameStarted().subscribe(welcomeMessage => {
-      this.testMessage.push(welcomeMessage);
+    this.game = this.gameService.game;
+    this.blocks = this.gameService.blocks;
+    
+    this.symbolSubscription = this.socketService.newGameStarted()
+    .subscribe((playerSymbol: string) => {
+      if (!this.playerSymbol) this.playerSymbol = playerSymbol; 
+      console.log('el symbolo del jugador es: ' + playerSymbol); 
     });
 
     this.opponentMoveSubscription = this.socketService.displayMove().subscribe(opponentMove => {
+      if (this.playerSymbol === 'X') {
+        this.blocks[opponentMove].symbol = 'O'
+      } 
+      if (this.playerSymbol === 'O') {
+        this.blocks[opponentMove].symbol = 'X'
+      }
     });
 
     this.opponentLeftSubscription = this.socketService.leftGame().subscribe(opponentLeft => {
@@ -39,13 +52,11 @@ export class GameBoardComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.newGameConnectionSubscription.unsubscribe();
     this.opponentMoveSubscription.unsubscribe();
     this.opponentLeftSubscription.unsubscribe();
   }
 
-  playerClick(position: number) {
-    // console.log(this.blocks.length);
+  onPlayerClick(blockPosition: number) {
+    this.gameService.playerClick(blockPosition, this.playerSymbol);
   }
-
 }

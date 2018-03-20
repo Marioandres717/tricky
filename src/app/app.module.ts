@@ -27,6 +27,8 @@ import { AuthService } from './shared/auth.service';
 import {UiService} from './shared/ui.service';
 import { PageNotFoundComponent } from './not-found.component';
 import { SocketService } from './shared/socket.service';
+import { AiService } from './game/ai.service';
+import { CreateTableService } from './shared/create-table.service';
 
 @NgModule({
   declarations: [
@@ -57,7 +59,7 @@ import { SocketService } from './shared/socket.service';
     AppRoutingModule,
   ],
   entryComponents: [PlayerLeftComponent],
-  providers: [GameService, AuthService,  UiService, SocketService],
+  providers: [GameService, AuthService,  UiService, SocketService, AiService, CreateTableService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

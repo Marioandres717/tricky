@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import io from 'socket.io-client';
 import {Observable} from 'rxjs/Observable';
+import {Game} from '../game/game.service';
 
 @Injectable()
 export class SocketService {
@@ -14,8 +15,8 @@ export class SocketService {
 
   newGameStarted() {
     const newGame = new Observable<string>(observer => {
-      this.socket.on('new game', (welcomeMessage) => {
-        observer.next(welcomeMessage);
+      this.socket.on('new game', (symbol) => {
+        observer.next(symbol);
       });
       return () => { this.socket.disconnect(); };
     });
@@ -42,8 +43,9 @@ export class SocketService {
     return opponentsMove;
   }
 
-  makeMove(blockId: number) {
-    this.socket.emit('player move', blockId);
+  makeMove(position: number, gameStatus: Game) {
+    console.log(gameStatus);
+    this.socket.emit('player move', position, gameStatus);
   }
 
   messageSend(messageContent: string) {

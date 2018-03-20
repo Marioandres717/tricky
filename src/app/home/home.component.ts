@@ -5,6 +5,7 @@ import {Table} from '../game/table.model';
 import {GameService} from '../game/game.service';
 import {Subscription} from 'rxjs/Subscription';
 import {Router} from '@angular/router';
+import {CreateTableService} from '../shared/create-table.service';
 
 @Component({
   selector: 'app-home',
@@ -17,12 +18,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   private gameTableSubscription: Subscription;
 
-  constructor(private socketService: SocketService, private gameService: GameService, private router: Router) {}
+  constructor(private socketService: SocketService, private createTableService: CreateTableService, private router: Router) {}
 
   ngOnInit() {
-    this.gameService.fetchAvailableGames();
+    this.createTableService.fetchAvailableGames();
 
-    this.gameTableSubscription = this.gameService.gameTableUpdate
+    this.gameTableSubscription = this.createTableService.gameTableUpdate
       .subscribe((gamesAvailable: Table[]) => { this.gameTable.data = gamesAvailable; });
   }
 
@@ -31,13 +32,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   onSubmitNewGame(gameID: string) {
-    this.gameService.newGame(gameID);
+    this.createTableService.newGame(gameID);
     this.socketService.joinGame(gameID);
     this.router.navigate(['/game/', gameID]);
   }
 
   joinGame(docId: any, gameID: string) {
-    this.gameService.updateTableState(docId);
+    this.createTableService.updateTableState(docId);
     this.socketService.joinGame(gameID);
     this.router.navigate(['/game/', gameID]);
   }

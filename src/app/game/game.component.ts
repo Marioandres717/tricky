@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {GameService} from './game.service';
+import {Blocks, Game, GameService} from './game.service';
 import {Subscription} from 'rxjs/Subscription';
 
 @Component({
@@ -12,8 +12,8 @@ export class GameComponent implements OnInit, OnDestroy {
   selectedGameSubscription$: Subscription;
   onGoingGame = false;
   message: string;
-  constructor( public gameService: GameService ) {
-    }
+
+  constructor( public gameService: GameService ) {}
 
 
   ngOnInit() {
@@ -23,10 +23,4 @@ export class GameComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.selectedGameSubscription$.unsubscribe();
   }
-
-  resetGame(event) {
-    location.reload();
-    event.preventDefault();
-  }
-
 }

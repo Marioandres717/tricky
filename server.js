@@ -16,7 +16,7 @@ app.use(express.static(__dirname + '/dist'));
 var waitingQueue = [];
 //Room number
 var gameNumber = 1;
-
+var symbol = 'X';
 
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
@@ -35,19 +35,21 @@ io.on('connection', function(socket) {
 
     // GAME FUNCTIONS
     socket.on('join game', function(playerInfo) {
-      console.log(socket.id);
+      console.log(playerInfo);
       socket.name = 'usernames';
       socket.gameID = playerInfo.gameID;
-      console.log(socket.gameID, playerInfo.gameID);
+      socket.symbol = symbol;
+      console.log('the socket symbol es: ' + socket.symbol);
       socket.join(socket.gameID);
-      socket.emit('new game', 'Hello contenders, I am Sonique your moderator.');
+      symbol = 'X' ? symbol = 'O' : symbol = 'X';
+      console.log('el nuevo symbolo es: ' + symbol);
+      io.in(socket.gameID).emit('new game', socket.symbol);
     });
 
-    socket.on('player move', function (blockId) {
+    socket.on('player move', function (blockId, gameStatus) {
       console.log('block selected: ' + blockId);
       socket.to(socket.gameID).emit('opponent move', blockId);
     });
-
 
     //CHAT FUNCTIONS
     socket.on('send-message', function(message) {
