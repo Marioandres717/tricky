@@ -39,9 +39,9 @@ io.on('connection', function(socket) {
       socket.name = 'usernames';
       socket.gameID = playerInfo.gameID;
       socket.symbol = symbol;
-      console.log('the socket symbol es: ' + socket.symbol);
       socket.join(socket.gameID);
-      symbol = 'X' ? symbol = 'O' : symbol = 'X';
+      if (symbol === 'X') symbol = 'O';
+      else symbol = 'X';
       console.log('el nuevo symbolo es: ' + symbol);
       io.in(socket.gameID).emit('new game', socket.symbol);
     });
