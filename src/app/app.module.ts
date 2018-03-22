@@ -27,8 +27,9 @@ import { AuthService } from './shared/auth.service';
 import {UiService} from './shared/ui.service';
 import { PageNotFoundComponent } from './not-found.component';
 import { SocketService } from './shared/socket.service';
-import { AiService } from './game/ai.service';
+import {AiService} from './game/ai.service';
 import { CreateTableService } from './shared/create-table.service';
+import { AiBoardComponent } from './ai-board/ai-board/ai-board.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { CreateTableService } from './shared/create-table.service';
     NewGameComponent,
     ChatComponent,
     HomeComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    AiBoardComponent
   ],
   imports: [
     MatTableModule,

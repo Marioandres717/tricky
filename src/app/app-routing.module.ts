@@ -6,11 +6,13 @@ import {GameBoardComponent} from './game/game-board/game-board.component';
 import {AuthGuard} from './auth/auth.guard';
 import {HomeComponent} from './home/home.component';
 import { PageNotFoundComponent } from './not-found.component';
+import {AiBoardComponent} from './ai-board/ai-board/ai-board.component';
 
 const routes: Routes = [
   {path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
   {path: 'game/:id', component: GameBoardComponent, canActivate: [AuthGuard] },
   {path: 'login', component: LoginComponent},
+  {path: 'ai', component: AiBoardComponent },
   {path: '', redirectTo: '/login', pathMatch: 'full'},
   {path: '**', component: PageNotFoundComponent},
 ];
