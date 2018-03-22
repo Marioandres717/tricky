@@ -1,26 +1,45 @@
 import { Injectable } from '@angular/core';
 import io from 'socket.io-client';
 import {Observable} from 'rxjs/Observable';
-import {Game} from '../game/game.service';
+// import {Game} from '../game/game.service';
+import {AuthService} from './auth.service';
 
 @Injectable()
 export class SocketService {
   private socket = io.connect('http://localhost:8080', {'forceNew': true});
 
-  constructor() { }
+  constructor(private authService: AuthService) { }
 
   joinGame(id: string) {
-    this.socket.emit('join game', {gameID: id});
+    const userInfo = this.authService.userInfo();
+    console.log(userInfo);
+    this.socket.emit('join game', {gameID: id, username: userInfo.email });
   }
 
   newGameStarted() {
-    const newGame = new Observable<string>(observer => {
-      this.socket.on('new game', (symbol) => {
-        observer.next(symbol);
+    const newGame = new Observable<Object>(observer => {
+      this.socket.on('game starts', (gameStatus) => {
+        const gameState = {
+          playerOne: gameStatus.playerOne,
+          playerTwo: gameStatus.playerTwo,
+          currentTurn: gameStatus.currentPlayer,
+          grid: gameStatus.grid
+        }
+        observer.next(gameState);
       });
       return () => { this.socket.disconnect(); };
     });
     return newGame;
+  }
+
+  waitingForGame() {
+    const waiting = new Observable<Object>(observer => {
+      this.socket.on('opponent not found', (status) => {
+        observer.next(status);
+      });
+      return () => { this.socket.disconnect(); };
+    });
+    return waiting;
   }
 
   leftGame() {
@@ -43,7 +62,7 @@ export class SocketService {
     return opponentsMove;
   }
 
-  makeMove(position: number, gameStatus: Game) {
+  makeMove(position: number, gameStatus: any) {
     console.log(gameStatus);
     this.socket.emit('player move', position, gameStatus);
   }

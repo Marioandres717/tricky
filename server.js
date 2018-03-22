@@ -13,10 +13,61 @@ app.use(express.static(__dirname + '/dist'));
 
 /// SOCKET.IO Functionality
 //store users(sockets) connected to the server
-var waitingQueue = [];
 //Room number
-var gameNumber = 1;
-var symbol = 'X';
+function nextTurn(playerOne, playerTwo, currentTurn) {
+  console.log('the  turn is changing');
+  var nextTurn;
+  if (currentTurn === playerOne) {
+    nextTurn = playerTwo;
+  } else {
+    nextTurn = playerOne;
+  }
+  return nextTurn;
+}
+
+function initializeGrid() {
+  var blocks = [];
+  for (let i = 0; i < 9; i++) blocks[i] = (null);
+  return blocks;
+}
+
+function hasMoves(gameState) {
+  for (let i = 0; i < 9; i++) {
+    if(gameState[i] === null) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function checkWinner(gameState) {
+  if((gameState[0]) && gameState[0] === gameState[1] && gameState[1] === gameState[2] && gameState[0] && gameState[2])
+    return gameState[0];
+
+  if((gameState[3]) && gameState[3] === gameState[4] && gameState[4] === gameState[5] && gameState[3] && gameState[5])
+    return gameState[3];
+
+  if((gameState[6]) && gameState[6] === gameState[7] && gameState[7] === gameState[8] && gameState[6] && gameState[8])
+    return gameState[6];
+
+  if((gameState[0]) && gameState[0] === gameState[3] && gameState[3] === gameState[6] && gameState[0] && gameState[6])
+    return gameState[0];
+
+  if((gameState[1]) && gameState[1] === gameState[4] && gameState[4] === gameState[7] && gameState[1] && gameState[7])
+    return gameState[1];
+
+  if((gameState[2]) && gameState[2] === gameState[5] && gameState[5] === gameState[8] && gameState[2] && gameState[8])
+    return gameState[2];
+
+  if((gameState[0]) && gameState[0] === gameState[4] && gameState[4] === gameState[8] && gameState[0] && gameState[8])
+    return gameState[0];
+
+  if((gameState[2]) && gameState[2] === gameState[4] && gameState[4] === gameState[6] && gameState[2] && gameState[6])
+    return gameState[2];
+
+  else return 'noWinner';
+}
+
 
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
@@ -26,29 +77,54 @@ io.on('connection', function(socket) {
     // PLAYER CLOSES THE BROWSER
     socket.on('disconnect', function() {
       console.log('someone disconnect: ' + socket.id);
-      var index = waitingQueue.indexOf(socket);
-      if (index !== -1) {
-        waitingQueue.splice(index, 1);
-      }
       socket.to(socket.gameID).emit('opponent left', 'Your opponent left the game! YOU HAVE WON!');
     });
 
     // GAME FUNCTIONS
     socket.on('join game', function(playerInfo) {
       console.log(playerInfo);
-      socket.name = 'usernames';
+      socket.name = playerInfo.username;
       socket.gameID = playerInfo.gameID;
-      socket.symbol = symbol;
       socket.join(socket.gameID);
-      if (symbol === 'X') symbol = 'O';
-      else symbol = 'X';
-      console.log('el nuevo symbolo es: ' + symbol);
-      io.in(socket.gameID).emit('new game', socket.symbol);
-    });
+      var room = io.sockets.adapter.rooms[socket.gameID];
+      console.log('el numero de jugadores' + room.length);
+      if (room.length >= 2) {
+        var playerSockets = [];
+        var socketsObject = room.sockets;
+        for (let id of Object.keys(socketsObject)) {
+          playerSockets.push(io.sockets.connected[id]);
+        }
+
+        var gameStatus = {
+         playerOne: playerSockets[0].name,
+         playerTwo: playerSockets[1].name,
+         currentPlayer: playerSockets[0].name,
+         gameStarts: true,
+         grid: initializeGrid()
+        }
+
+        console.log(gameStatus);
+        io.in(socket.gameID).emit('game starts', gameStatus);
+      } else {
+        console.log('no hay 2 players!');
+        io.in(socket.gameID).emit('opponent not found', true);
+      }
+});
 
     socket.on('player move', function (blockId, gameStatus) {
-      console.log('block selected: ' + blockId);
-      socket.to(socket.gameID).emit('opponent move', blockId);
+      var winner = checkWinner(gameStatus.grid);
+      var emptyBlocks = hasMoves(gameStatus);
+      if (winner === 'noWinner' && emptyBlocks) {
+      var nextTurn = nextTurn(gameStatus.playerOne, gameStatus.playerTwo, gameStatus.currentPlayer);
+        gameStatus.currentPlayer = nextTurn;
+        socket.to(socket.gameID).emit('opponent move', gameStatus);
+      } else if (winner === 'noWinner' && !emptyBlocks) {
+        gameStatus.draw = true;
+        io.in(socket.gameID).emit('draw', gameStatus);
+      } else {
+        gameStatus.winner = winner;
+        io.in(socket.gameID).emit('Winner Found', gameStatus);
+      }
     });
 
     //CHAT FUNCTIONS
@@ -57,41 +133,6 @@ io.on('connection', function(socket) {
       socket.to(socket.gameID).emit('receive-message', message);
     });
 });
-
-
-
-// // FUNCTION FOR CREATING 2 PEOPLE SESSIONS
-// setInterval(function(){
-//   console.log('The number of Players in the queue are: ' + waitingQueue.length);
-//   // if there is only one person in the queue then return
-//   if(waitingQueue.length < 2)
-//     return;
-//
-//   //else, there is more than 1 person in the queue
-//   //Select randomly the players & dequeue them
-//   //Player 1
-//   var indexOfPlayer = Math.floor(Math.random()*waitingQueue.length);
-//   var playerOne = waitingQueue[indexOfPlayer];
-//   waitingQueue.splice(indexOfPlayer, 1);
-//
-//   //Player 2
-//   var indexOfPlayer = Math.floor(Math.random()*waitingQueue.length);
-//   var playerTwo = waitingQueue[indexOfPlayer];
-//   //Remove player from queue
-//   waitingQueue.splice(indexOfPlayer, 1);
-//   //Create game id
-//   var gameID = 'gameID' + gameNumber++;
-//   //Create room for the 2 players (join is a method from socket.io)
-//   playerOne.join(gameID);
-//   playerTwo.join(gameID);
-//   //set gameID property in socket
-//   playerOne.gameID = gameID;
-//   playerTwo.gameID = gameID;
-//   //TEST MESSAGE
-//   console.log(waitingQueue.length);
-//   io.to(gameID).emit('welcome room', {msg: 'hi from room ' + gameID });
-//
-// },2000);
 
 app.get('*', function(req, res) {
   res.sendFile(__dirname + '/dist/index.html');

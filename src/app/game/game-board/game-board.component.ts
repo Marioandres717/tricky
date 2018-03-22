@@ -1,10 +1,11 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Blocks, Game, GameService} from '../game.service';
+import {GameService} from '../game.service';
 import {Subscription} from 'rxjs/Subscription';
 import {MatDialog} from '@angular/material';
 import {PlayerLeftComponent} from './player-left.component';
 import {SocketService} from '../../shared/socket.service';
-
+import {AuthService}  from '../../shared/auth.service';
+import {UiService}  from '../../shared/ui.service';
 
 @Component({
   selector: 'app-game-board',
@@ -14,34 +15,40 @@ import {SocketService} from '../../shared/socket.service';
 
 export class GameBoardComponent implements OnInit, OnDestroy {
 
-  constructor(private socketService: SocketService, private dialog: MatDialog, private gameService: GameService) { }
-  opponentMoveSubscription: Subscription;
-  opponentLeftSubscription: Subscription;
-  symbolSubscription: Subscription;
-  blocks: Blocks[];
-  game: Game;
-  playerSymbol: string;
+  constructor(private uiService: UiService, private authService: AuthService, private socketService: SocketService, private dialog: MatDialog, private gameService: GameService) { }
+  opponentMoveSubscription$: Subscription;
+  opponentLeftSubscription$: Subscription;
+  symbolSubscription$: Subscription;
+  newGameSubscription$: Subscription;
+  blocks: string[];
+  turn: any;
+  player = this.authService.userInfo().email;
+  CurrentTurn: any;
+  playerSymbol = 'X';
+  playerOne: any;
+  playerTwo: any;
+
+
 
   ngOnInit() {
-    this.game = this.gameService.game;
-    this.blocks = this.gameService.blocks;
+    this.newGameSubscription$ = this.socketService.newGameStarted()
+    .subscribe((gameStatus: any) => {
+      this.playerOne = gameStatus.playerOne;
+      this.playerTwo = gameStatus. PlayerTwo;
+      this.blocks = gameStatus.grid;
+      this.turn = gameStatus.CurrentTurn;
+    });
     
-    this.symbolSubscription = this.socketService.newGameStarted()
-    .subscribe((playerSymbol: string) => {
-      if (!this.playerSymbol) this.playerSymbol = playerSymbol; 
-      console.log('el symbolo del jugador es: ' + playerSymbol); 
+    this.opponentMoveSubscription$ = this.socketService.displayMove().subscribe(opponentMove => {
+      // if (this.playerSymbol === 'X') {
+      //   this.blocks[opponentMove].symbol = 'O'
+      // } 
+      // if (this.playerSymbol === 'O') {
+      //   this.blocks[opponentMove].symbol = 'X'
+      // }
     });
 
-    this.opponentMoveSubscription = this.socketService.displayMove().subscribe(opponentMove => {
-      if (this.playerSymbol === 'X') {
-        this.blocks[opponentMove].symbol = 'O'
-      } 
-      if (this.playerSymbol === 'O') {
-        this.blocks[opponentMove].symbol = 'X'
-      }
-    });
-
-    this.opponentLeftSubscription = this.socketService.leftGame().subscribe(opponentLeft => {
+    this.opponentLeftSubscription$ = this.socketService.leftGame().subscribe(opponentLeft => {
       const dialogRef = this.dialog.open(PlayerLeftComponent, {data: {
         opponentInfo: opponentLeft
         }});
@@ -52,11 +59,25 @@ export class GameBoardComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.opponentMoveSubscription.unsubscribe();
-    this.opponentLeftSubscription.unsubscribe();
+    this.opponentMoveSubscription$.unsubscribe();
+    this.opponentLeftSubscription$.unsubscribe();
   }
 
   onPlayerClick(blockPosition: number) {
-    this.gameService.playerClick(blockPosition, this.playerSymbol);
+    if (this.blocks[blockPosition]) {
+      this.uiService.showSnackBar('You cannot play this block! try a different one', null, 3000);
+    }
+    else if (this.CurrentTurn !== this.player) {
+      this.uiService.showSnackBar('Wait for your turn!', null, 3000);
+    } else {
+      this.blocks[blockPosition] = this.playerSymbol;
+      const NewGameState = {
+        playerOne: this.playerOne,
+        playerTwo: this.playerTwo,
+        CurrentPlayer: this.turn,
+        grid: this.blocks
+      }
+      this.socketService.makeMove(blockPosition, NewGameState);
+    }
   }
 }

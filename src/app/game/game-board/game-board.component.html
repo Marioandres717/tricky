@@ -1,8 +1,8 @@
 <mat-card class="mat-elevation-z3 size">
   <mat-grid-list class="tic-tac-grid" cols="3" >
     <mat-grid-tile *ngFor="let block of blocks; let i = index;"
-                   (click)="onPlayerClick(i, block.symbol)">
-      <i [class]="block.symbol == 'X' ? 'material-icons clear' : 'material-icons panorama_fish_eye'">{{ block.symbol }}</i>
+                   (click)="onPlayerClick(i)">
+      <i [class]="playerSymbol == 'X' ? 'material-icons clear' : 'material-icons panorama_fish_eye'">{{ blocks[i] }}</i>
     </mat-grid-tile>
   </mat-grid-list>
 </mat-card>
