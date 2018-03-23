@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator, MatTableDataSource} from '@angular/material';
 import {SocketService} from '../shared/socket.service';
-import {Table} from '../game/table.model';
+import {NewSession} from '../game/table.model';
 import {GameService} from '../game/game.service';
 import {Subscription} from 'rxjs/Subscription';
 import {Router} from '@angular/router';
@@ -14,7 +14,7 @@ import {CreateTableService} from '../shared/create-table.service';
 })
 export class HomeComponent implements OnInit, AfterViewInit {
   displayedColumns = ['user', 'created', 'number of players', 'join'];
-  gameTable = new MatTableDataSource<Table>();
+  gameTable = new MatTableDataSource<NewSession>();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   private gameTableSubscription: Subscription;
 
@@ -24,7 +24,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.createTableService.fetchAvailableGames();
 
     this.gameTableSubscription = this.createTableService.gameTableUpdate
-      .subscribe((gamesAvailable: Table[]) => { this.gameTable.data = gamesAvailable; });
+      .subscribe((gamesAvailable: NewSession[]) => { this.gameTable.data = gamesAvailable; });
   }
 
   ngAfterViewInit() {
@@ -32,9 +32,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   onSubmitNewGame(gameID: string) {
-    this.createTableService.newGame(gameID);
-    this.socketService.joinGame(gameID);
-    this.router.navigate(['/game/', gameID]);
+    const self = this;
+    this.createTableService.newGame(gameID).then(function(data: any) {
+      self.socketService.joinGame(data.id);
+      self.router.navigate(['/game/', data.id]);
+    }, function(err) {
+      console.log(err);
+    });
   }
 
   joinGame(docId: any, gameID: string) {

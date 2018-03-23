@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
+//noinspection TypeScriptCheckImport
 import io from 'socket.io-client';
 import {Observable} from 'rxjs/Observable';
-// import {Game} from '../game/game.service';
 import {AuthService} from './auth.service';
+import {environment} from '../../environments/environment';
 
 @Injectable()
 export class SocketService {
-  private socket = io.connect('http://localhost:8080', {'forceNew': true});
+  private socket = io.connect(environment.path, {'forceNew': true});
 
   constructor(private authService: AuthService) { }
 

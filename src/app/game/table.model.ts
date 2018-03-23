@@ -1,7 +1,5 @@
-export interface Table {
-  id: any;
+export interface NewSession {
   name: string;
   user: string;
-  numberOfPlayers: number;
   created: Date;
 }

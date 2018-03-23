@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {Subject} from 'rxjs/Subject';
 import {AngularFirestore, AngularFirestoreDocument} from 'angularfire2/firestore';
 import {Subscription} from 'rxjs/Subscription';
-import {Table} from './table.model';
+import {NewSession} from './table.model';
 import 'rxjs/operator/map';
 import {UiService} from '../shared/ui.service';
 import {AuthService} from '../shared/auth.service';

@@ -1,7 +1,12 @@
 import { Injectable } from '@angular/core';
-import {Table} from '../game/table.model';
+import {NewSession} from '../game/table.model';
 import {Subscription} from 'rxjs/Subscription';
 import {Subject} from 'rxjs/Subject';
+/*
+* http://reactivex.io/rxjs/manual/overview.html#subject
+* A Subject is like an Observable, but can multicast to many Observers.
+* Subjects are like EventEmitters: they maintain a registry of many listeners.
+*/
 import {AngularFirestore} from 'angularfire2/firestore';
 import {UiService} from './ui.service';
 import {AuthService} from './auth.service';
@@ -9,8 +14,8 @@ import {AuthService} from './auth.service';
 @Injectable()
 export class CreateTableService {
   private firebaseSubscriptions: Subscription[] = [];
-  private gameTablesAvailable: Table[] = [];
-  gameTableUpdate = new Subject<Table[]>();
+  private gameTablesAvailable: NewSession[] = [];
+  gameTableUpdate = new Subject<NewSession[]>();
 
   constructor(private db: AngularFirestore, private uiService: UiService, private authService: AuthService) { }
 
@@ -28,7 +33,7 @@ export class CreateTableService {
             created: game.payload.doc.data().created
           };
         });
-      }).subscribe((gamesAvailable: Table[]) => {
+      }).subscribe((gamesAvailable: NewSession[]) => {
         this.gameTablesAvailable = gamesAvailable;
         this.gameTableUpdate.next([...this.gameTablesAvailable]);
       }, error => {
@@ -37,24 +42,28 @@ export class CreateTableService {
       }));
   }
 
-  newGame(gameID: string): void {
+  newGame(sessionName: string) {
     const userInfo = this.authService.userInfo();
-    const info: Table = {
-      id: '',
-      name: gameID,
+    const info: NewSession = {
+      name: sessionName,
       user: userInfo.email,
-      numberOfPlayers: 1,
       created: new Date()
     };
-    this.createNewGameTable(info);
+    return this.createNewGameTable(info);
   }
 
   updateTableState(docId: any): void {
     this.db.doc(`gameTables/${docId}`).update({numberOfPlayers: 2});
   }
 
-  createNewGameTable(newTable: Table): void {
-    this.db.collection<Table>('gameTables').add(newTable);
+  private createNewGameTable(newTable: NewSession) {
+    return new Promise ((resolve, reject) => {
+      this.db.collection<NewSession>('gameTables').add(newTable).then(function(data) {
+        resolve(data);
+        console.log(data);
+      }, function(err) {
+        reject(err);
+      });
+    });
   }
-
 }

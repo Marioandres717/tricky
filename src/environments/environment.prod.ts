@@ -7,5 +7,6 @@ export const environment = {
     projectId: 'tic-tac-toe-acb7f',
     storageBucket: 'tic-tac-toe-acb7f.appspot.com',
     messagingSenderId: '741600020933'
-  }
+  },
+  path: 'herokupathhere'
 };
