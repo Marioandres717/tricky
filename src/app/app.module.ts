@@ -9,6 +9,8 @@ import {AuthModule} from './auth/auth.module';
 import {AngularFireModule} from 'angularfire2';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material';
+import { HttpClientModule } from '@angular/common/http';
+import {SessionService} from './api/api.service';
 
 import {environment} from '../environments/environment';
 
@@ -59,9 +61,10 @@ import { AiBoardComponent } from './ai-board/ai-board/ai-board.component';
     AngularFireModule.initializeApp(environment.firebase),
     AuthModule,
     AppRoutingModule,
+    HttpClientModule
   ],
   entryComponents: [PlayerLeftComponent],
-  providers: [GameService, AuthService,  UiService, SocketService, AiService, CreateTableService],
+  providers: [GameService, AuthService,  UiService, SocketService, AiService, CreateTableService, SessionService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -6,6 +6,9 @@ import {GameService} from '../game/game.service';
 import {Subscription} from 'rxjs/Subscription';
 import {Router} from '@angular/router';
 import {CreateTableService} from '../shared/create-table.service';
+import {SessionService} from '../api/api.service';
+import {AuthService} from "../shared/auth.service";
+
 
 @Component({
   selector: 'app-home',
@@ -18,7 +21,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   private gameTableSubscription: Subscription;
 
-  constructor(private socketService: SocketService, private createTableService: CreateTableService, private router: Router) {}
+  constructor(private createTableService: CreateTableService, private session: SessionService, private router: Router, private authService: AuthService) {}
 
   ngOnInit() {
     this.createTableService.fetchAvailableGames();
@@ -32,18 +35,32 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   onSubmitNewGame(gameID: string) {
-    const self = this;
-    this.createTableService.newGame(gameID).then(function(data: any) {
-      self.socketService.joinGame(data.id);
-      self.router.navigate(['/game/', data.id]);
-    }, function(err) {
-      console.log(err);
-    });
+    const userInfo = this.authService.userInfo();
+    let newGame: NewSession = {
+      name: gameID,
+      created: new Date(),
+      user: userInfo.email,
+      numberOfUsers: 1
+    };
+    this.session.createSession(newGame)
+
+    // sessionService
+
+
+    // const self = this;
+    // this.createTableService.newGame(gameID).then(function(data: any) {
+    //   // self.socketService.joinGame(data.id);
+    //   self.router.navigate(['/game/', data.id]);
+    // }, function(err) {
+    //   console.log(err);
+    // });
   }
 
-  joinGame(docId: any, gameID: string) {
-    this.createTableService.updateTableState(docId);
-    this.socketService.joinGame(gameID);
-    this.router.navigate(['/game/', gameID]);
+  joinGame(id: string) {
+     this.createTableService.getSessionInfo(id);
+
+    // this.createTableService.updateTableState(docId);
+    // this.socketService.joinGame(gameID);
+    // this.router.navigate(['/game/', gameID]);
   }
 }

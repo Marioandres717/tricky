@@ -8,16 +8,23 @@ import {Subject} from 'rxjs/Subject';
 * Subjects are like EventEmitters: they maintain a registry of many listeners.
 */
 import {AngularFirestore} from 'angularfire2/firestore';
+import { AngularFireDatabase } from 'angularfire2/database';
+import { HttpClient } from '@angular/common/http';
+
 import {UiService} from './ui.service';
 import {AuthService} from './auth.service';
+
+
+import * as firebase from 'firebase/app';
 
 @Injectable()
 export class CreateTableService {
   private firebaseSubscriptions: Subscription[] = [];
   private gameTablesAvailable: NewSession[] = [];
+  private localDataBase = firebase.database();
   gameTableUpdate = new Subject<NewSession[]>();
 
-  constructor(private db: AngularFirestore, private uiService: UiService, private authService: AuthService) { }
+  constructor(private db: AngularFirestore, private uiService: UiService, private authService: AuthService, private http: HttpClient) { }
 
   fetchAvailableGames(): void {
     this.firebaseSubscriptions.push(this.db
@@ -54,6 +61,18 @@ export class CreateTableService {
 
   updateTableState(docId: any): void {
     this.db.doc(`gameTables/${docId}`).update({numberOfPlayers: 2});
+  }
+
+  getSessionInfo(sessionId: string) {
+   // this.http.get(`https://tic-tac-toe-acb7f.firebaseio.com/gameTables/${sessionId}.json?auth=bDej5ygCZmAucWVMlDzW3RW68c6TbrCk7rrclqFj`).subscribe(data => {
+   this.http.get(`https://tic-tac-toe-acb7f.firebaseio.com/gameTables.json?auth=bDej5ygCZmAucWVMlDzW3RW68c6TbrCk7rrclqFj`).subscribe(data => {
+     console.log(data);
+   });
+   // let session =  this.localDataBase.ref('gameTables')
+   //
+   // session.once('value').then(function(data) {
+   //    debugger;
+   //  },function(err){});
   }
 
   private createNewGameTable(newTable: NewSession) {
