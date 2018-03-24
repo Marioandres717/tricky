@@ -11,17 +11,11 @@ export class SessionService {
   constructor(private http: HttpClient) { }
 
   getAllSessions() {
-      return this.http.get(`${this.base}/gameTables.json?${this.auth}`);
+    return this.http.get(`${this.base}/gameTables.json?${this.auth}`);
   }
 
   getSession(sessionId: string) {
-    return new Promise((resolve, reject) => {
-      this.http.get(`${this.base}/gameTables/${sessionId}.json?${this.auth}`).subscribe(data => {
-        resolve(data);
-      }, err => {
-        reject(err);
-      });
-    });
+    return this.http.get(`${this.base}/gameTables/${sessionId}.json?${this.auth}`);
   }
 
   createSession(params: NewSession) {
