@@ -1,11 +1,36 @@
-<mat-sidenav-container>
-  <mat-sidenav #sidenav role="navigation">
-    <app-sidenav-list (closeSidenav)="sidenav.close()"></app-sidenav-list>
-  </mat-sidenav>
-  <mat-sidenav-content>
-    <app-header (sidenavToggle)="sidenav.toggle()"></app-header>
-    <main>
-      <router-outlet></router-outlet>
-    </main>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+<div class="example-container">
+  <mat-toolbar color="primary" class="example-toolbar">
+    <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
+    <h1 class="example-app-name">Tic-Tac-Toe</h1>
+  </mat-toolbar>
+
+  <mat-sidenav-container class="example-sidenav-container">
+    <mat-sidenav #snav>
+      <mat-nav-list>
+        <a *ngIf="isAuth" mat-list-item routerLink="/home" routerLinkActive="active">
+          <mat-icon>face</mat-icon>
+          <span class="nav-caption">Home</span>
+        </a>
+        <a *ngIf="!isAuth" mat-list-item routerLink="/" routerLinkActive="active">
+          <mat-icon>input</mat-icon>
+          <span class="nav-caption">Login</span>
+        </a>
+        <a  *ngIf="isAuth" mat-list-item routerLink="/game" routerLinkActive="active">
+          <mat-icon>games</mat-icon>
+          <span class="nav-caption" >Game</span>
+        </a>
+        <mat-list-item *ngIf="isAuth">
+          <button  mat-icon-button>
+            <mat-icon>eject</mat-icon>
+            <span class="nav-caption" (click)='logout()'>Logout</span>
+          </button>
+        </mat-list-item>
+      </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <main class="contenido">
+        <router-outlet></router-outlet>
+      </main>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

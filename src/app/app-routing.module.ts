@@ -7,7 +7,7 @@ import {AuthGuard} from './auth/auth.guard';
 import {HomeComponent} from './home/home.component';
 import { PageNotFoundComponent } from './not-found.component';
 import {AiBoardComponent} from './ai/ai-board.component';
-import {WaitingComponent} from './game/waiting.component';
+import {WaitingComponent} from './game/waiting/waiting.component';
 import {ChatComponent} from './chat/chat.component';
 
 
@@ -20,7 +20,6 @@ const routes: Routes = [
   {path: 'game/:id', component: GameBoardComponent, canActivate: [AuthGuard] },
   {path: '', redirectTo: '/login', pathMatch: 'full'},
   {path: '**', component: PageNotFoundComponent}
-
 ];
 
 @NgModule({

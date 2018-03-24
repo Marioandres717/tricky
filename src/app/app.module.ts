@@ -15,8 +15,6 @@ import {SessionService} from './api/api.service';
 import {environment} from '../environments/environment';
 
 import { AppComponent } from './app.component';
-import { HeaderComponent } from './navigation/header/header.component';
-import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.component';
 import { LoginComponent } from './auth/login/login.component';
 import { GameComponent } from './game/game.component';
 import {GameService} from './game/game.service';
@@ -29,16 +27,14 @@ import { AuthService } from './shared/auth.service';
 import {UiService} from './shared/ui.service';
 import { PageNotFoundComponent } from './not-found.component';
 import { SocketService } from './shared/socket.service';
-import {AiService} from './game/ai.service';
+import {AiService} from './shared/ai.service';
 import { AiBoardComponent } from './ai/ai-board.component';
-import { WaitingComponent } from './game/waiting.component';
+import { WaitingComponent } from './game/waiting/waiting.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    HeaderComponent,
-    SidenavListComponent,
     LoginComponent,
     GameComponent,
     GameBoardComponent,

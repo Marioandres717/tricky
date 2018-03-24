@@ -7,7 +7,7 @@ import 'rxjs/operator/map';
 import {UiService} from '../shared/ui.service';
 import {AuthService} from '../shared/auth.service';
 import {SocketService} from '../shared/socket.service';
-import {AiService} from './ai.service';
+import {AiService} from '../shared/ai.service';
 
 export class Blocks {
   blockNumber: number;
