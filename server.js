@@ -15,7 +15,8 @@ const CreateNewGame = function() {
   return {
     players: [],
     currentPlayer: '',
-    grid: [0, 0, 0, 0, 0, 0, 0, 0, 0]
+    grid: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    roomId: ''
   };
 };
 
@@ -79,8 +80,6 @@ const server = require('http').Server(app);
 const io = require('socket.io')(server);
 
 io.on('connection', function(socket) {
-  let room;
-
     // PLAYER CLOSES THE BROWSER
     socket.on('disconnect', function() {
       console.log('someone disconnect: ' + socket.id);
@@ -95,35 +94,43 @@ io.on('connection', function(socket) {
 
       socket.join(roomId);
       room = io.sockets.adapter.rooms[roomId];
-      if (room && room.length < 2) {
-        if (room && room.game === undefined) room.game = new CreateNewGame();
-        room.game.players.push(playerName);
-      } else if (room.length === 2) {
-        room.game.players.push(playerName);
+      if (room && room.game === undefined) room.game = new CreateNewGame();
+      room.game.players.push(playerName);
+      if (room.length === 2) {
         room.game.currentPlayer = room.game.players[0];
+        room.game.roomId = roomId;
         io.in(roomId).emit('game-updated', room.game);
       }
-});
+    });
 
-    socket.on('player move', function (blockId, gameStatus) {
-      var winner = checkWinner(gameStatus.grid);
-      var emptyBlocks = hasMoves(gameStatus.grid);
+    socket.on('player-move', function (gameStatus) {
+      console.log(gameStatus);
 
-      if (winner === 'noWinner' && emptyBlocks) {
-        gameStatus.currentPlayer = nextTurn(gameStatus.playerOne, gameStatus.playerTwo, gameStatus.currentPlayer);
-        console.log(gameStatus);
-        socket.to(socket.gameID).emit('opponent move', gameStatus);
+      gameStatus.currentPlayer === gameStatus.players[0]
+        ? gameStatus.currentPlayer = gameStatus.players[1]
+        : gameStatus.currentPlayer = gameStatus.players[0];
 
-      } else if (winner === 'noWinner' && !emptyBlocks) {
-        gameStatus.draw = true;
-        console.log(gameStatus);
-        io.in(socket.gameID).emit('opponent move', gameStatus);
+      io.in(gameStatus.roomId).emit('game-updated', gameStatus);
 
-      } else {
-        gameStatus.winner = winner;
-        console.log('the winner of the game is: ', winner);
-        io.in(socket.gameID).emit('opponent move', gameStatus);
-      }
+
+      // var winner = checkWinner(gameStatus.grid);
+      // var emptyBlocks = hasMoves(gameStatus.grid);
+      //
+      // if (winner === 'noWinner' && emptyBlocks) {
+      //   gameStatus.currentPlayer = nextTurn(gameStatus.playerOne, gameStatus.playerTwo, gameStatus.currentPlayer);
+      //   console.log(gameStatus);
+      //   socket.to(socket.gameID).emit('opponent move', gameStatus);
+      //
+      // } else if (winner === 'noWinner' && !emptyBlocks) {
+      //   gameStatus.draw = true;
+      //   console.log(gameStatus);
+      //   io.in(socket.gameID).emit('opponent move', gameStatus);
+      //
+      // } else {
+      //   gameStatus.winner = winner;
+      //   console.log('the winner of the game is: ', winner);
+      //   io.in(socket.gameID).emit('opponent move', gameStatus);
+      // }
     });
 
     //CHAT FUNCTIONS

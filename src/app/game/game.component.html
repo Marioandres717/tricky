@@ -1,3 +1,12 @@
+<mat-card class="mat-elevation-z3 size">
+  <mat-grid-list class="tic-tac-grid" cols="3" >
+    <mat-grid-tile *ngFor="let position of grid; let i = index;" (click)="onPlayerClick(i)">
+      <!--<i [class]="position === user.assignedNumber ? 'material-icons clear' : 'material-icons panorama_fish_eye'">{{position}}</i>-->
+      <i *ngIf="position">{{ position }}</i>
+    </mat-grid-tile>
+  </mat-grid-list>
+</mat-card>
+
 <!--<div class="container" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-around" fxLayout.lt-sm="column">-->
   <!--<app-game-board *ngIf="onGoingGame" fxFlex="40%"></app-game-board>-->
   <!--<app-chat *ngIf="onGoingGame" fxFlex="25%" fxFlexFill fxLayout="column"></app-chat>-->
