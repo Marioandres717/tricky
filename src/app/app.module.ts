@@ -30,7 +30,7 @@ import {UiService} from './shared/ui.service';
 import { PageNotFoundComponent } from './not-found.component';
 import { SocketService } from './shared/socket.service';
 import {AiService} from './game/ai.service';
-import { AiBoardComponent } from './ai-board/ai-board/ai-board.component';
+import { AiBoardComponent } from './ai/ai-board.component';
 
 @NgModule({
   declarations: [
