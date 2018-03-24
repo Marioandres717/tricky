@@ -23,29 +23,49 @@ export class GameBoardComponent implements OnInit, OnDestroy {
   blocks: string[];
   turn: any;
   player = this.authService.userInfo().email;
-  CurrentTurn: any;
-  playerSymbol = 'X';
+  playerSymbol: string;
   playerOne: any;
   playerTwo: any;
-
-
+  winner: string;
+  draw: boolean;
 
   ngOnInit() {
     this.newGameSubscription$ = this.socketService.newGameStarted()
     .subscribe((gameStatus: any) => {
       this.playerOne = gameStatus.playerOne;
-      this.playerTwo = gameStatus. PlayerTwo;
+      this.playerTwo = gameStatus.playerTwo;
       this.blocks = gameStatus.grid;
-      this.turn = gameStatus.CurrentTurn;
+      this.turn = gameStatus.currentPlayer;
+      this.winner = gameStatus.winner;
+      this.draw = gameStatus.draw;
+
+      if (this.playerOne === this.player) {
+        this.playerSymbol = 'X';
+      } else {
+        this.playerSymbol = 'O';
+      }
     });
     
-    this.opponentMoveSubscription$ = this.socketService.displayMove().subscribe(opponentMove => {
-      // if (this.playerSymbol === 'X') {
-      //   this.blocks[opponentMove].symbol = 'O'
-      // } 
-      // if (this.playerSymbol === 'O') {
-      //   this.blocks[opponentMove].symbol = 'X'
-      // }
+    this.opponentMoveSubscription$ = this.socketService.displayMove().subscribe((gameStatus: any) => {
+      this.blocks = gameStatus.grid;
+      this.turn = gameStatus.currentPlayer;
+      this.winner = gameStatus.winner;
+      this.draw = gameStatus.draw;
+      console.log('el primer winner: ', gameStatus);
+
+      if (this.winner === 'noWinner') {
+        console.log(this.winner);
+      }
+      else {
+        this.turn = '';
+        console.log(this.winner);
+        this.uiService.showSnackBar(`This winner is ${this.winner}`, null, 5000);
+      }
+
+      if(this.draw === true) {
+        this.turn = '';
+        this.uiService.showSnackBar(`The game is a draw`, null, 5000);
+      }
     });
 
     this.opponentLeftSubscription$ = this.socketService.leftGame().subscribe(opponentLeft => {
@@ -59,6 +79,7 @@ export class GameBoardComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.newGameSubscription$.unsubscribe();
     this.opponentMoveSubscription$.unsubscribe();
     this.opponentLeftSubscription$.unsubscribe();
   }
@@ -67,16 +88,19 @@ export class GameBoardComponent implements OnInit, OnDestroy {
     if (this.blocks[blockPosition]) {
       this.uiService.showSnackBar('You cannot play this block! try a different one', null, 3000);
     }
-    else if (this.CurrentTurn !== this.player) {
+    else if (this.turn !== this.player) {
       this.uiService.showSnackBar('Wait for your turn!', null, 3000);
     } else {
       this.blocks[blockPosition] = this.playerSymbol;
       const NewGameState = {
         playerOne: this.playerOne,
         playerTwo: this.playerTwo,
-        CurrentPlayer: this.turn,
-        grid: this.blocks
+        currentPlayer: this.turn,
+        grid: this.blocks,
+        winner: this.winner,
+        draw: this.draw
       }
+      this.turn = '';
       this.socketService.makeMove(blockPosition, NewGameState);
     }
   }

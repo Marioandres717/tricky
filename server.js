@@ -10,18 +10,15 @@ app.use(express.static(__dirname + '/dist'));
 // Heroku port
 // app.listen(process.env.PORT || 3000);
 
-
-/// SOCKET.IO Functionality
-//store users(sockets) connected to the server
-//Room number
-function nextTurn(playerOne, playerTwo, currentTurn) {
-  console.log('the  turn is changing');
-  var nextTurn;
+var nextTurn = function (playerOne, playerTwo, currentTurn) {
+  console.log('the  turn is changing', currentTurn);
+  var nextTurn = '';
   if (currentTurn === playerOne) {
     nextTurn = playerTwo;
   } else {
     nextTurn = playerOne;
   }
+  console.log('the next turn is: ', nextTurn);
   return nextTurn;
 }
 
@@ -100,6 +97,8 @@ io.on('connection', function(socket) {
          playerTwo: playerSockets[1].name,
          currentPlayer: playerSockets[0].name,
          gameStarts: true,
+         winner: 'noWinner',
+         draw: false,
          grid: initializeGrid()
         }
 
@@ -113,17 +112,22 @@ io.on('connection', function(socket) {
 
     socket.on('player move', function (blockId, gameStatus) {
       var winner = checkWinner(gameStatus.grid);
-      var emptyBlocks = hasMoves(gameStatus);
+      var emptyBlocks = hasMoves(gameStatus.grid);
+
       if (winner === 'noWinner' && emptyBlocks) {
-      var nextTurn = nextTurn(gameStatus.playerOne, gameStatus.playerTwo, gameStatus.currentPlayer);
-        gameStatus.currentPlayer = nextTurn;
+        gameStatus.currentPlayer = nextTurn(gameStatus.playerOne, gameStatus.playerTwo, gameStatus.currentPlayer);
+        console.log(gameStatus);
         socket.to(socket.gameID).emit('opponent move', gameStatus);
+
       } else if (winner === 'noWinner' && !emptyBlocks) {
         gameStatus.draw = true;
-        io.in(socket.gameID).emit('draw', gameStatus);
+        console.log(gameStatus);
+        io.in(socket.gameID).emit('opponent move', gameStatus);
+
       } else {
         gameStatus.winner = winner;
-        io.in(socket.gameID).emit('Winner Found', gameStatus);
+        console.log('the winner of the game is: ', winner);
+        io.in(socket.gameID).emit('opponent move', gameStatus);
       }
     });
 
