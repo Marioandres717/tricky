@@ -2,7 +2,6 @@ import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator, MatTableDataSource} from '@angular/material';
 import {NewSession} from '../game/table.model';
 import {Router} from '@angular/router';
-import {CreateTableService} from '../shared/create-table.service';
 import {SessionService} from '../api/api.service';
 import {AuthService} from "../shared/auth.service";
 
@@ -16,12 +15,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
   gameTable = new MatTableDataSource<NewSession>();
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private createTableService: CreateTableService, private session: SessionService, private router: Router, private authService: AuthService) {}
+  constructor(private session: SessionService, private router: Router, private authService: AuthService) {}
 
   ngOnInit() {
     this.session.getAllSessions().subscribe((sessions: NewSession[]) => {
       let formedData = [];
       for (let key in sessions) {
+        sessions[key]['id'] = key;
         formedData.push(sessions[key]);
       }
       this.gameTable.data = formedData;
@@ -51,10 +51,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   joinGame(id: string) {
-     this.createTableService.getSessionInfo(id);
-
-    // this.createTableService.updateTableState(docId);
-    // this.socketService.joinGame(gameID);
-    // this.router.navigate(['/game/', gameID]);
+    this.router.navigate(['/game/', id]);
   }
 }

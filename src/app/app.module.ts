@@ -30,7 +30,6 @@ import {UiService} from './shared/ui.service';
 import { PageNotFoundComponent } from './not-found.component';
 import { SocketService } from './shared/socket.service';
 import {AiService} from './game/ai.service';
-import { CreateTableService } from './shared/create-table.service';
 import { AiBoardComponent } from './ai-board/ai-board/ai-board.component';
 
 @NgModule({
@@ -64,7 +63,7 @@ import { AiBoardComponent } from './ai-board/ai-board/ai-board.component';
     HttpClientModule
   ],
   entryComponents: [PlayerLeftComponent],
-  providers: [GameService, AuthService,  UiService, SocketService, AiService, CreateTableService, SessionService],
+  providers: [GameService, AuthService,  UiService, SocketService, AiService, SessionService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
