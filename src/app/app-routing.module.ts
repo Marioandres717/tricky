@@ -6,15 +6,24 @@ import {GameBoardComponent} from './game/game-board/game-board.component';
 import {AuthGuard} from './auth/auth.guard';
 import {HomeComponent} from './home/home.component';
 import { PageNotFoundComponent } from './not-found.component';
+<<<<<<< Updated upstream
 import {AiBoardComponent} from './ai/ai-board.component';
+=======
+import {AiBoardComponent} from './ai-board/ai-board/ai-board.component';
+import {WaitingComponent} from './game/waiting.component';
+import {ChatComponent} from './chat/chat.component';
+>>>>>>> Stashed changes
 
 const routes: Routes = [
-  {path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
-  {path: 'game/:id', component: GameBoardComponent, canActivate: [AuthGuard] },
   {path: 'login', component: LoginComponent},
-  {path: 'ai', component: AiBoardComponent },
+  {path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
+  {path: 'ai', component: AiBoardComponent, canActivate: [AuthGuard] },
+  {path: 'chat', component: ChatComponent, canActivate: [AuthGuard] },
+  {path: 'waiting', component: WaitingComponent},
+  {path: 'game/:id', component: GameBoardComponent, canActivate: [AuthGuard] },
   {path: '', redirectTo: '/login', pathMatch: 'full'},
-  {path: '**', component: PageNotFoundComponent},
+  {path: '**', component: PageNotFoundComponent}
+
 ];
 
 @NgModule({

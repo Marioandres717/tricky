@@ -4,6 +4,7 @@ import io from 'socket.io-client';
 import {Observable} from 'rxjs/Observable';
 import {AuthService} from './auth.service';
 import {environment} from '../../environments/environment';
+import {Message} from '../chat/chat.component';
 
 @Injectable()
 export class SocketService {
@@ -62,13 +63,13 @@ export class SocketService {
     this.socket.emit('player move', position, gameStatus);
   }
 
-  messageSend(messageContent: string) {
+  messageSend(message: Message) {
     // HERE WE HAVE TO ADD THE USER INFORMATION & TIME STAMP
-    this.socket.emit('send-message', messageContent);
+    this.socket.emit('send-message', message);
   }
 
   messageReceived() {
-    const MessageFromOtherUSer = new Observable<string>(observer => {
+    const MessageFromOtherUSer = new Observable<Message>(observer => {
       this.socket.on('receive-message', (message) => {
         observer.next(message);
       });

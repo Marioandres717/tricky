@@ -30,7 +30,12 @@ import {UiService} from './shared/ui.service';
 import { PageNotFoundComponent } from './not-found.component';
 import { SocketService } from './shared/socket.service';
 import {AiService} from './game/ai.service';
+<<<<<<< Updated upstream
 import { AiBoardComponent } from './ai/ai-board.component';
+=======
+import { AiBoardComponent } from './ai-board/ai-board/ai-board.component';
+import { WaitingComponent } from './game/waiting.component';
+>>>>>>> Stashed changes
 
 @NgModule({
   declarations: [
@@ -45,7 +50,8 @@ import { AiBoardComponent } from './ai/ai-board.component';
     ChatComponent,
     HomeComponent,
     PageNotFoundComponent,
-    AiBoardComponent
+    AiBoardComponent,
+    WaitingComponent
   ],
   imports: [
     MatTableModule,

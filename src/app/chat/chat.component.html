@@ -1,19 +1,24 @@
-<mat-card class="example-card" class="mat-elevation-z3">
+<div class="container space">
+  <div class="row">
+    <div class="col-lg-5 col-md-5">
+      <mat-card class="example-card" fxFill class="mat-elevation-z3">
+        <mat-card-header *ngFor="let message of messages">
+          <div mat-card-avatar class="example-header-image"></div>
+          <div [class.message-wrapper]="message.owner" [class.not-owner]="!message.owner">
+            <mat-card-title>{{message.content}}</mat-card-title>
+            <mat-card-subtitle>{{timestamp | date: 'shortTime'}}</mat-card-subtitle>
+          </div>
+        </mat-card-header>
 
-  <mat-card-header *ngFor="let message of messages">
-    <div mat-card-avatar class="example-header-image"></div>
-    <div class="message-wrapper mat-elevation-z3">
-      <mat-card-title>{{message}}</mat-card-title>
-      <mat-card-subtitle>{{timestamp | date: 'shortTime'}}</mat-card-subtitle>
+        <mat-card-actions>
+          <mat-form-field fxFlex="75%">
+            <textarea #messageContent matInput placeholder="Write your message here...." matTextareaAutosize matAutosizeMinRows="1"
+                matAutosizeMaxRows="1"></textarea>
+          </mat-form-field>
+          <button mat-button (click)="sendMessage(messageContent.value); messageContent.value=''"><i class="material-icons">send</i></button>
+        </mat-card-actions>
+      </mat-card>
     </div>
-  </mat-card-header>
+  </div>
+</div>
 
-  <mat-card-actions>
-    <mat-form-field fxFlex="75%">
-      <textarea #messageContent matInput placeholder="Write your message here...." matTextareaAutosize matAutosizeMinRows="1"
-                matAutosizeMaxRows="2"></textarea>
-    </mat-form-field>
-    <button mat-button (click)="sendMessage(messageContent.value)"><i class="material-icons">send</i></button>
-  </mat-card-actions>
-
-</mat-card>

@@ -18,7 +18,6 @@ export class GameBoardComponent implements OnInit, OnDestroy {
   constructor(private uiService: UiService, private authService: AuthService, private socketService: SocketService, private dialog: MatDialog, private gameService: GameService) { }
   opponentMoveSubscription$: Subscription;
   opponentLeftSubscription$: Subscription;
-  symbolSubscription$: Subscription;
   newGameSubscription$: Subscription;
   blocks: string[];
   turn: any;
@@ -45,7 +44,7 @@ export class GameBoardComponent implements OnInit, OnDestroy {
         this.playerSymbol = 'O';
       }
     });
-    
+
     this.opponentMoveSubscription$ = this.socketService.displayMove().subscribe((gameStatus: any) => {
       this.blocks = gameStatus.grid;
       this.turn = gameStatus.currentPlayer;
@@ -55,8 +54,7 @@ export class GameBoardComponent implements OnInit, OnDestroy {
 
       if (this.winner === 'noWinner') {
         console.log(this.winner);
-      }
-      else {
+      } else {
         this.turn = '';
         console.log(this.winner);
         this.uiService.showSnackBar(`This winner is ${this.winner}`, null, 5000);
@@ -87,8 +85,7 @@ export class GameBoardComponent implements OnInit, OnDestroy {
   onPlayerClick(blockPosition: number) {
     if (this.blocks[blockPosition]) {
       this.uiService.showSnackBar('You cannot play this block! try a different one', null, 3000);
-    }
-    else if (this.turn !== this.player) {
+    } else if (this.turn !== this.player) {
       this.uiService.showSnackBar('Wait for your turn!', null, 3000);
     } else {
       this.blocks[blockPosition] = this.playerSymbol;

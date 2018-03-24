@@ -134,7 +134,8 @@ io.on('connection', function(socket) {
     //CHAT FUNCTIONS
     socket.on('send-message', function(message) {
       console.log(message);
-      socket.to(socket.gameID).emit('receive-message', message);
+      // socket.to(socket.gameID).emit('receive-message', message);
+      socket.broadcast.emit('receive-message', message);
     });
 });
 

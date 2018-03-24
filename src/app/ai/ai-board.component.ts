@@ -8,8 +8,8 @@ import {AiService} from '../game/ai.service';
 })
 export class AiBoardComponent implements OnInit {
   blocks: string[];
-  playerSymbol = 'X';
-  aiMove: number;
+  playerSymbol = 'O';
+  aiMove: number[];
   constructor(private aiService: AiService) { }
 
   ngOnInit() {
@@ -20,11 +20,11 @@ export class AiBoardComponent implements OnInit {
   onPlayerClick(position: number) {
     this.blocks[position] = this.playerSymbol;
     this.aiService.state = this.blocks;
-    this.aiService.aisign = 'O';
-    this.aiService.humansign = 'X';
-    this.aiMove = this.aiService.getMove();
+    this.aiService.aisign = 'X';
+    this.aiService.humansign = 'O';
+    this.aiMove = this.aiService.minimax(this.blocks,'X');
     console.log(this.aiMove);
-    this.blocks[this.aiMove] = 'O';
+    this.blocks[this.aiMove[0]] = 'X';
   }
 
 }
