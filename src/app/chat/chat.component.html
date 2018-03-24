@@ -3,7 +3,8 @@
     <div class="col-lg-5 col-md-5">
       <mat-card class="example-card" fxFill class="mat-elevation-z3">
         <mat-card-header *ngFor="let message of messages">
-          <div mat-card-avatar class="example-header-image"></div>
+          <div mat-card-avatar   [class.example-header-image]="!message.photo"><img *ngIf="message.photo"
+            class='fit' src='{{message.photo}}'></div>
           <div [class.message-wrapper]="message.owner" [class.not-owner]="!message.owner">
             <mat-card-title>{{message.content}}</mat-card-title>
             <mat-card-subtitle>{{timestamp | date: 'shortTime'}}</mat-card-subtitle>
