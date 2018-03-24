@@ -20,7 +20,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.messageSubscription.unsubscribe();
+    // this.messageSubscription.unsubscribe();
   }
 
   // sendMessage(message: string) {
