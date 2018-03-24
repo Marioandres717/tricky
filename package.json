@@ -6,7 +6,7 @@
   },
   "license": "MIT",
   "scripts": {
-    "start": "server.js",
+    "start": "node server.js",
     "ng": "ng",
     "build": "ng build",
     "test": "ng test",
