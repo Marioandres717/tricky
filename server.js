@@ -10,7 +10,16 @@ app.use(express.static(__dirname + '/dist'));
 // Heroku port
 // app.listen(process.env.PORT || 3000);
 
-var nextTurn = function (playerOne, playerTwo, currentTurn) {
+
+const CreateNewGame = function() {
+  return {
+    players: [],
+    currentPlayer: '',
+    grid: [0, 0, 0, 0, 0, 0, 0, 0, 0]
+  };
+};
+
+const nextTurn = function (playerOne, playerTwo, currentTurn) {
   console.log('the  turn is changing', currentTurn);
   var nextTurn = '';
   if (currentTurn === playerOne) {
@@ -20,24 +29,24 @@ var nextTurn = function (playerOne, playerTwo, currentTurn) {
   }
   console.log('the next turn is: ', nextTurn);
   return nextTurn;
-}
+};
 
-function initializeGrid() {
+const initializeGrid = function() {
   var blocks = [];
   for (let i = 0; i < 9; i++) blocks[i] = (null);
   return blocks;
-}
+};
 
-function hasMoves(gameState) {
+const hasMoves = function(gameState) {
   for (let i = 0; i < 9; i++) {
     if(gameState[i] === null) {
       return true;
     }
   }
   return false;
-}
+};
 
-function checkWinner(gameState) {
+const checkWinner = function(gameState) {
   if((gameState[0]) && gameState[0] === gameState[1] && gameState[1] === gameState[2] && gameState[0] && gameState[2])
     return gameState[0];
 
@@ -66,11 +75,12 @@ function checkWinner(gameState) {
 }
 
 
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
 
 io.on('connection', function(socket) {
-    console.log('Someone connected via sockets');
+  let room;
+
     // PLAYER CLOSES THE BROWSER
     socket.on('disconnect', function() {
       console.log('someone disconnect: ' + socket.id);
@@ -78,35 +88,20 @@ io.on('connection', function(socket) {
     });
 
     // GAME FUNCTIONS
-    socket.on('join game', function(playerInfo) {
-      console.log(playerInfo);
-      socket.name = playerInfo.username;
-      socket.gameID = playerInfo.gameID;
-      socket.join(socket.gameID);
-      var room = io.sockets.adapter.rooms[socket.gameID];
-      console.log('el numero de jugadores' + room.length);
-      if (room.length >= 2) {
-        var playerSockets = [];
-        var socketsObject = room.sockets;
-        for (let id of Object.keys(socketsObject)) {
-          playerSockets.push(io.sockets.connected[id]);
-        }
+    socket.on('join-game', function(playerInfo) {
+      let roomId = playerInfo.gameID,
+          playerName = playerInfo.username,
+          room;
 
-        var gameStatus = {
-         playerOne: playerSockets[0].name,
-         playerTwo: playerSockets[1].name,
-         currentPlayer: playerSockets[0].name,
-         gameStarts: true,
-         winner: 'noWinner',
-         draw: false,
-         grid: initializeGrid()
-        }
-
-        console.log(gameStatus);
-        io.in(socket.gameID).emit('game starts', gameStatus);
-      } else {
-        console.log('no hay 2 players!');
-        io.in(socket.gameID).emit('opponent not found', true);
+      socket.join(roomId);
+      room = io.sockets.adapter.rooms[roomId];
+      if (room && room.length < 2) {
+        if (room && room.game === undefined) room.game = new CreateNewGame();
+        room.game.players.push(playerName);
+      } else if (room.length === 2) {
+        room.game.players.push(playerName);
+        room.game.currentPlayer = room.game.players[0];
+        io.in(roomId).emit('game-updated', room.game);
       }
 });
 

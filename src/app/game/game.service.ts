@@ -102,7 +102,7 @@ export class GameService {
       this.blocks[position].symbol = symbol;
       this.blocks[position].empty = false;
       this.gameState();
-      this.socketService.makeMove(position, this.game);
+      // this.socketService.makeMove(position, this.game);
     }
   }
 

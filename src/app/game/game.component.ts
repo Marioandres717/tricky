@@ -1,6 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Blocks, Game, GameService} from './game.service';
-import {Subscription} from 'rxjs/Subscription';
+import {Router} from "@angular/router";
+import {SocketService} from "../shared/socket.service";
 
 @Component({
   selector: 'app-game',
@@ -9,18 +10,22 @@ import {Subscription} from 'rxjs/Subscription';
 })
 
 export class GameComponent implements OnInit, OnDestroy {
-  selectedGameSubscription$: Subscription;
-  onGoingGame = false;
-  message: string;
+  private gameSession = this.router.url.replace('/game/','');
+  private session: any;
+  private gameProgress: any;
 
-  constructor( public gameService: GameService ) {}
-
+  constructor( private router: Router, private socketService: SocketService) {}
 
   ngOnInit() {
-    this.selectedGameSubscription$ = this.gameService.OngoingGame$.subscribe(game => { this.onGoingGame = game; });
+    this.session = this.socketService.connectToServer(this.gameSession);
+    this.socketService.gameUpdated(this.session, (gameStatus: any) => {
+      this.gameProgress = gameStatus;
+    });
   }
 
+  private playerMove() {
+    this.socketService.playerMove(this.session, this.gameProgress);
+  }
   ngOnDestroy() {
-    this.selectedGameSubscription$.unsubscribe();
   }
 }
