@@ -12,5 +12,8 @@ export const environment = {
     projectId: 'tic-tac-toe-acb7f',
     storageBucket: 'tic-tac-toe-acb7f.appspot.com',
     messagingSenderId: '741600020933'
-  }
+  },
+  path: 'http://localhost:8080',
+  secret: 'auth=bDej5ygCZmAucWVMlDzW3RW68c6TbrCk7rrclqFj',
+  base: 'https://tic-tac-toe-acb7f.firebaseio.com'
 };

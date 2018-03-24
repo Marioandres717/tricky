@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {GameService} from '../game.service';
 
 @Component({
@@ -16,7 +16,6 @@ export class NewGameComponent implements OnInit {
   }
 
   setGame(form) {
-    console.log(form.value.selectedGame);
     this.gameService.selectNewGame(form.value.selectedGame);
   }
 }

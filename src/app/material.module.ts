@@ -14,13 +14,14 @@ import {
   MatNativeDateModule,
   MatSidenavModule,
   MatTableModule,
-  MatToolbarModule
+  MatToolbarModule,
 } from '@angular/material';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatSelectModule} from '@angular/material/select';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatGridListModule} from '@angular/material/grid-list';
+import {MatRadioModule} from '@angular/material/radio';
 
 @NgModule({
   imports: [
@@ -42,7 +43,8 @@ import {MatGridListModule} from '@angular/material/grid-list';
     MatDialogModule,
     MatSnackBarModule,
     MatGridListModule,
-    MatTableModule
+    MatTableModule,
+    MatRadioModule
   ],
   exports: [
     CommonModule,
@@ -63,7 +65,8 @@ import {MatGridListModule} from '@angular/material/grid-list';
     MatDialogModule,
     MatSnackBarModule,
     MatGridListModule,
-    MatTableModule
+    MatTableModule,
+    MatRadioModule
   ],
   declarations: []
 })

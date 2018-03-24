@@ -1,0 +1,21 @@
+
+.example-header-image {
+  background-image: url('https://bnetproduct-a.akamaihd.net//fbc/4f7677caa44a03e03a2823459082301f-sc2-coop-alarak-feature-img-003-1.jpg');
+  background-size: cover;
+}
+
+.message-wrapper {
+  padding: 10px;
+  background-color: #5829bb;
+  border-radius: 5px;
+  color: white;
+}
+
+mat-card-subtitle {
+  margin-bottom: 5px;
+  color: darkgrey;
+}
+
+mat-card-header {
+  margin: 10px;
+}

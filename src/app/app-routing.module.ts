@@ -1,25 +1,31 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {RouterModule, Routes} from '@angular/router';
-import {WelcomeComponent} from './welcome/welcome.component';
-import {SignupComponent} from './auth/signup/signup.component';
 import {LoginComponent} from './auth/login/login.component';
-import {GameComponent} from './game/game.component';
+import {GameBoardComponent} from './game/game-board/game-board.component';
+import {AuthGuard} from './auth/auth.guard';
+import {HomeComponent} from './home/home.component';
+import { PageNotFoundComponent } from './not-found.component';
+import {AiBoardComponent} from './ai-board/ai-board/ai-board.component';
 
 const routes: Routes = [
-  {path: '', component: WelcomeComponent},
-  {path: 'signup', component: SignupComponent},
+  {path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
+  {path: 'game/:id', component: GameBoardComponent, canActivate: [AuthGuard] },
   {path: 'login', component: LoginComponent},
-  {path: 'game', component: GameComponent}
-]
+  {path: 'ai', component: AiBoardComponent },
+  {path: '', redirectTo: '/login', pathMatch: 'full'},
+  {path: '**', component: PageNotFoundComponent},
+];
+
 @NgModule({
   imports: [
     CommonModule,
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(routes) //, {enableTracing: true})
   ],
   exports: [
     RouterModule
   ],
-  declarations: []
+  declarations: [],
+  providers: [AuthGuard]
 })
 export class AppRoutingModule { }
