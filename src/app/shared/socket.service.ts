@@ -27,6 +27,10 @@ export class SocketService {
     socket.on('game-updated', updateFunction);
   }
 
+  public gameOver(socket: any, gameOverFunction) {
+    socket.on('game-over', gameOverFunction);
+  }
+
   // newGameStarted() {
   //   const newGame = new Observable<Object>(observer => {
   //     this.socket.on('game starts', (gameStatus: any) => {

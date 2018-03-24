@@ -41,6 +41,10 @@ export class GameComponent implements OnInit, OnDestroy {
       this.user.assignedNumber = this.gameProgress.players.indexOf(this.user.name) + 1;
       this.grid = this.gameProgress.grid;
     });
+
+    this.socketService.gameOver(this.session, (gameOver) => {
+
+    });
   }
 
   private onPlayerClick(position: number) {

@@ -48,33 +48,23 @@ const hasMoves = function(gameState) {
 };
 
 const checkWinner = function(gameState) {
-  if((gameState[0]) && gameState[0] === gameState[1] && gameState[1] === gameState[2] && gameState[0] && gameState[2])
-    return gameState[0];
+  for (let index = 0, gameLength = gameState.length; index < gameLength; index++) {
 
-  if((gameState[3]) && gameState[3] === gameState[4] && gameState[4] === gameState[5] && gameState[3] && gameState[5])
-    return gameState[3];
+    let initial = index < 3 ? index * 3 : index < 6 ? index - 3 : index === 7 ? 0 : 2,
+        range = index < 3 ? 1 : index < 6 ? 3 : index === 7 ? 4 : 2,
+        count = 0,
+        empty = false;
 
-  if((gameState[6]) && gameState[6] === gameState[7] && gameState[7] === gameState[8] && gameState[6] && gameState[8])
-    return gameState[6];
-
-  if((gameState[0]) && gameState[0] === gameState[3] && gameState[3] === gameState[6] && gameState[0] && gameState[6])
-    return gameState[0];
-
-  if((gameState[1]) && gameState[1] === gameState[4] && gameState[4] === gameState[7] && gameState[1] && gameState[7])
-    return gameState[1];
-
-  if((gameState[2]) && gameState[2] === gameState[5] && gameState[5] === gameState[8] && gameState[2] && gameState[8])
-    return gameState[2];
-
-  if((gameState[0]) && gameState[0] === gameState[4] && gameState[4] === gameState[8] && gameState[0] && gameState[8])
-    return gameState[0];
-
-  if((gameState[2]) && gameState[2] === gameState[4] && gameState[4] === gameState[6] && gameState[2] && gameState[6])
-    return gameState[2];
-
-  else return 'noWinner';
-}
-
+    for (let i = 0; i < 3; i++) {
+      let position = initial + (i * range);
+      gameState[position] ? count += gameState[position] : empty = true;
+    }
+    if (!empty && (count === 3) || (count === 6)) {
+      return count / 3;
+    }
+  }
+  return 0;
+};
 
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
