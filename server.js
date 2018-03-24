@@ -19,34 +19,6 @@ const CreateNewGame = function() {
     roomId: ''
   };
 };
-
-const nextTurn = function (playerOne, playerTwo, currentTurn) {
-  console.log('the  turn is changing', currentTurn);
-  var nextTurn = '';
-  if (currentTurn === playerOne) {
-    nextTurn = playerTwo;
-  } else {
-    nextTurn = playerOne;
-  }
-  console.log('the next turn is: ', nextTurn);
-  return nextTurn;
-};
-
-const initializeGrid = function() {
-  var blocks = [];
-  for (let i = 0; i < 9; i++) blocks[i] = (null);
-  return blocks;
-};
-
-const hasMoves = function(gameState) {
-  for (let i = 0; i < 9; i++) {
-    if(gameState[i] === null) {
-      return true;
-    }
-  }
-  return false;
-};
-
 const checkWinner = function(gameState) {
   for (let index = 0, gameLength = gameState.length; index < gameLength; index++) {
 
@@ -94,33 +66,16 @@ io.on('connection', function(socket) {
     });
 
     socket.on('player-move', function (gameStatus) {
-      console.log(gameStatus);
+      let winnerIndex = checkWinner(gameStatus.grid);
+      if (!winnerIndex) {
+        gameStatus.currentPlayer === gameStatus.players[0]
+          ? gameStatus.currentPlayer = gameStatus.players[1]
+          : gameStatus.currentPlayer = gameStatus.players[0];
 
-      gameStatus.currentPlayer === gameStatus.players[0]
-        ? gameStatus.currentPlayer = gameStatus.players[1]
-        : gameStatus.currentPlayer = gameStatus.players[0];
-
-      io.in(gameStatus.roomId).emit('game-updated', gameStatus);
-
-
-      // var winner = checkWinner(gameStatus.grid);
-      // var emptyBlocks = hasMoves(gameStatus.grid);
-      //
-      // if (winner === 'noWinner' && emptyBlocks) {
-      //   gameStatus.currentPlayer = nextTurn(gameStatus.playerOne, gameStatus.playerTwo, gameStatus.currentPlayer);
-      //   console.log(gameStatus);
-      //   socket.to(socket.gameID).emit('opponent move', gameStatus);
-      //
-      // } else if (winner === 'noWinner' && !emptyBlocks) {
-      //   gameStatus.draw = true;
-      //   console.log(gameStatus);
-      //   io.in(socket.gameID).emit('opponent move', gameStatus);
-      //
-      // } else {
-      //   gameStatus.winner = winner;
-      //   console.log('the winner of the game is: ', winner);
-      //   io.in(socket.gameID).emit('opponent move', gameStatus);
-      // }
+        io.in(gameStatus.roomId).emit('game-updated', gameStatus);
+      } else {
+        io.in(gameStatus.roomId).emit('game-over', gameStatus.players[winnerIndex]);
+      }
     });
 
     //CHAT FUNCTIONS
