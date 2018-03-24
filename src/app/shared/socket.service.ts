@@ -19,14 +19,8 @@ export class SocketService {
 
   newGameStarted() {
     const newGame = new Observable<Object>(observer => {
-      this.socket.on('game starts', (gameStatus) => {
-        const gameState = {
-          playerOne: gameStatus.playerOne,
-          playerTwo: gameStatus.playerTwo,
-          currentTurn: gameStatus.currentPlayer,
-          grid: gameStatus.grid
-        }
-        observer.next(gameState);
+      this.socket.on('game starts', (gameStatus: any) => {
+        observer.next(gameStatus);
       });
       return () => { this.socket.disconnect(); };
     });
@@ -54,9 +48,9 @@ export class SocketService {
   }
 
   displayMove() {
-    const opponentsMove = new Observable<number>(observer => {
-      this.socket.on('opponent move', (blockId) => {
-        observer.next(blockId);
+    const opponentsMove = new Observable<any>(observer => {
+      this.socket.on('opponent move', (gameStatus) => {
+        observer.next(gameStatus);
       });
       return () => { this.socket.disconnect(); };
     });
