@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {AiService} from '../../game/ai.service';
+import {AiService} from '../game/ai.service';
 
 @Component({
   selector: 'app-ai-board',
