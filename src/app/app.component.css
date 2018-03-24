@@ -10,6 +10,9 @@ mat-nav-list {
   margin-top: 60px;
 }
 
+.fa-gamepad {
+  font-size: 2.5em;
+}
 .example-container {
   display: flex;
   flex-direction: column;

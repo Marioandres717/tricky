@@ -17,10 +17,8 @@ import {environment} from '../environments/environment';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './auth/login/login.component';
 import { GameComponent } from './game/game.component';
-import {GameService} from './game/game.service';
 import { GameBoardComponent } from './game/game-board/game-board.component';
 import { PlayerLeftComponent } from './game/game-board/player-left.component';
-import { NewGameComponent } from './game/new-game/new-game.component';
 import { ChatComponent } from './chat/chat.component';
 import { HomeComponent } from './home/home.component';
 import { AuthService } from './shared/auth.service';
@@ -39,7 +37,6 @@ import { WaitingComponent } from './game/waiting/waiting.component';
     GameComponent,
     GameBoardComponent,
     PlayerLeftComponent,
-    NewGameComponent,
     ChatComponent,
     HomeComponent,
     PageNotFoundComponent,
@@ -62,7 +59,7 @@ import { WaitingComponent } from './game/waiting/waiting.component';
     HttpClientModule
   ],
   entryComponents: [PlayerLeftComponent],
-  providers: [GameService, AuthService,  UiService, SocketService, AiService, SessionService],
+  providers: [AuthService,  UiService, SocketService, AiService, SessionService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

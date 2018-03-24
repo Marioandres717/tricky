@@ -1,28 +1,29 @@
 <div class="example-container">
   <mat-toolbar color="primary" class="example-toolbar">
     <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
-    <h1 class="example-app-name">Tic-Tac-Toe</h1>
+    <!--<i class="material-icons md-48">videogame_asset</i>-->
+    <i class="fa fas fa-gamepad" aria-hidden="true"> </i>
   </mat-toolbar>
 
   <mat-sidenav-container class="example-sidenav-container">
     <mat-sidenav #snav>
       <mat-nav-list>
         <a *ngIf="isAuth" mat-list-item routerLink="/home" routerLinkActive="active">
-          <mat-icon>face</mat-icon>
-          <span class="nav-caption">Home</span>
+          <mat-icon>games</mat-icon>
+          <span class="nav-caption"> Multiplayer</span>
         </a>
         <a *ngIf="!isAuth" mat-list-item routerLink="/" routerLinkActive="active">
           <mat-icon>input</mat-icon>
-          <span class="nav-caption">Login</span>
+          <span class="nav-caption"> Login</span>
         </a>
-        <a  *ngIf="isAuth" mat-list-item routerLink="/game" routerLinkActive="active">
-          <mat-icon>games</mat-icon>
-          <span class="nav-caption" >Game</span>
+        <a  *ngIf="isAuth" mat-list-item routerLink="/ai" routerLinkActive="active">
+          <mat-icon>face</mat-icon>
+          <span class="nav-caption" > Single-Player</span>
         </a>
         <mat-list-item *ngIf="isAuth">
           <button  mat-icon-button>
             <mat-icon>eject</mat-icon>
-            <span class="nav-caption" (click)='logout()'>Logout</span>
+            <span class="nav-caption" (click)='logout()'> Logout</span>
           </button>
         </mat-list-item>
       </mat-nav-list>

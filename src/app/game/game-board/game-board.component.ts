@@ -1,11 +1,10 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {GameService} from '../game.service';
 import {Subscription} from 'rxjs/Subscription';
 import {MatDialog} from '@angular/material';
 import {PlayerLeftComponent} from './player-left.component';
 import {SocketService} from '../../shared/socket.service';
-import {AuthService}  from '../../shared/auth.service';
-import {UiService}  from '../../shared/ui.service';
+import {AuthService} from '../../shared/auth.service';
+import {UiService} from '../../shared/ui.service';
 
 @Component({
   selector: 'app-game-board',
@@ -15,7 +14,7 @@ import {UiService}  from '../../shared/ui.service';
 
 export class GameBoardComponent implements OnInit, OnDestroy {
 
-  constructor(private uiService: UiService, private authService: AuthService, private socketService: SocketService, private dialog: MatDialog, private gameService: GameService) { }
+  constructor(private uiService: UiService, private authService: AuthService, private socketService: SocketService, private dialog: MatDialog) { }
   opponentMoveSubscription$: Subscription;
   opponentLeftSubscription$: Subscription;
   newGameSubscription$: Subscription;
