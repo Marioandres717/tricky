@@ -37,11 +37,7 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmitRegistration(form: FormGroup) {
-    this.auth.createNewUser(form.value.email, form.value.password).then((data) => {
-      // this.router.navigate(['/home']);
-    }, (err) => {
-      this.uiService.showSnackBar(err.message, null, 3000);
-    });
+    this.auth.createNewUser(form);
   }
 
   onSubmitLogin(form: FormGroup) {

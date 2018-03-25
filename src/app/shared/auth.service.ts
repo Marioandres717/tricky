@@ -1,23 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-
 import * as firebase from 'firebase/app';
 import {AngularFireAuth} from 'angularfire2/auth';
 import {AngularFirestore, AngularFirestoreDocument} from 'angularfire2/firestore';
-
-import {Observable} from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
+import {UserService} from "../api/api.service";
+import {UserProfile} from "../interfaces/user.model";
 
 
-interface User {
-  uid: string;
-  email: string;
-  photoURL?: string;
-  displayName?: string;
-  dateOfBirth?: Date;
-  Win?: number;
-  TotalGames?: number;
-}
+
 
 @Injectable()
 export class AuthService {
@@ -25,7 +16,7 @@ export class AuthService {
   private isAuthenticated = false;
   authChange = new Subject<boolean>();
 
-  constructor(private afAuth: AngularFireAuth, private afs: AngularFirestore, private router: Router ) {
+  constructor(private userService: UserService,  private afAuth: AngularFireAuth, private afs: AngularFirestore, private router: Router ) {
     this.afAuth.authState.subscribe(user => {
       if (user) {
         this.isAuthenticated = true;
@@ -41,15 +32,21 @@ export class AuthService {
     return this.user = firebase.auth().currentUser;
   }
 
-  public createNewUser(email: string, password: string) {
-    return new Promise((resolve, reject) => {
-      this.afAuth.auth.createUserWithEmailAndPassword(email, password).then((data) => {
-        this.userInfo();
-        this.updateUserData(this.user);
-        resolve(data);
-      }, (err) => {
-        reject(err);
-      });
+  // public createNewUser(email: string, password: string) {
+  public createNewUser(userForm) {
+    console.log(`userForm: ${userForm}`);
+    firebase.auth().createUserWithEmailAndPassword(userForm.value.email, userForm.value.password).then((user) => {
+      let params: UserProfile = {
+        user_uid: user.uid,
+        user_email: userForm.value.email,
+        user_nickname: userForm.value.username,
+        user_total_wins: 0,
+        user_total_games: 0
+      };
+      this.userService.createUserProfile(params)
+        .subscribe(() => this.router.navigate(['/home']), err => console.log(`${err}: failed to create user Profile`));
+    }, (err) => {
+      console.log(`${err}: failed to create user`);
     });
   }
 
@@ -76,17 +73,17 @@ export class AuthService {
   }
 
   private updateUserData(user) {
-    // Sets user data to firestore on login
-    const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
-    const data: User = {
-        uid: user.uid,
-        email: user.email,
-        displayName: user.displayName,
-        photoURL: user.photoURL
-    };
-     this.router.navigate(['/home']);
-      // Stores in the db
-      return userRef.set(Object.assign({}, data), {merge: true});
+    // // Sets user data to firestore on login
+    // const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
+    // const data: User = {
+    //     uid: user.uid,
+    //     email: user.email,
+    //     displayName: user.displayName,
+    //     photoURL: user.photoURL
+    // };
+    //  this.router.navigate(['/home']);
+    //   // Stores in the db
+    //   return userRef.set(Object.assign({}, data), {merge: true});
   }
 
   public getAuthState() {

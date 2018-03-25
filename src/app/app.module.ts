@@ -10,7 +10,7 @@ import {AngularFireModule} from 'angularfire2';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material';
 import { HttpClientModule } from '@angular/common/http';
-import {SessionService} from './api/api.service';
+import {SessionService, UserService} from './api/api.service';
 
 import {environment} from '../environments/environment';
 
@@ -63,7 +63,7 @@ import { AiBoardComponent } from './ai-board/ai-board/ai-board.component';
     HttpClientModule
   ],
   entryComponents: [PlayerLeftComponent],
-  providers: [GameService, AuthService,  UiService, SocketService, AiService, SessionService],
+  providers: [GameService, AuthService,  UiService, SocketService, AiService, SessionService, UserService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

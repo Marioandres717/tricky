@@ -2,6 +2,8 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {SocketService} from "../shared/socket.service";
 import {AuthService} from "../shared/auth.service";
+import {UserService} from '../api/api.service';
+import {UserProfile} from "../interfaces/user.model";
 
 export interface GameProgress {
   players: string[],
@@ -30,12 +32,12 @@ export class GameComponent implements OnInit, OnDestroy {
     name: this.authService.userInfo().email,
     assignedNumber: undefined
   };
-
+  private userProfile: UserProfile;
 
   grid: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
   enableReset: boolean = false;
 
-  constructor(private router: Router, private socketService: SocketService, private authService: AuthService) {}
+  constructor(private router: Router, private socketService: SocketService, private authService: AuthService, private userService: UserService) {}
 
   ngOnInit() {
     this.session = this.socketService.connectToServer(this.gameSession);
@@ -53,13 +55,22 @@ export class GameComponent implements OnInit, OnDestroy {
 
     this.socketService.gameOver(this.session, (gameOver) => {
       if (gameOver === this.user.name) {
-          // update user winner here
+        this.userProfile.user_total_games += 1;
+        this.userProfile.user_total_wins += 1;
+        this.userService.updateUserProfile(this.userProfile);
         //  show user winner message
         } else {
-          //update user lose here
+        this.userProfile.user_total_games += 1;
+        this.userService.updateUserProfile(this.userProfile);
         //show loser message :(
         }
       this.enableReset = true;
+    });
+
+    this.userService.getUserProfile(this.authService.userInfo().uid).subscribe((userProfile: UserProfile) => {
+      this.userProfile = userProfile;
+    }, err => {
+      console.log(`${err}, failed to load user profile`);
     });
   }
 
