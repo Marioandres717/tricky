@@ -33,7 +33,10 @@ export class UserService {
   constructor(private http: HttpClient) {}
 
   getUserProfile(user_uid: string) {
-    this.options['params'] = { user_uid: user_uid };
+    this.options['params'] = {
+      orderBy: '"user_uid"',
+      equalTo: `"${user_uid}"`
+    };
     return this.http.get(`${this.base}/users.json?${this.auth}`, this.options);
   }
 

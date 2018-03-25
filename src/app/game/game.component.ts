@@ -68,7 +68,8 @@ export class GameComponent implements OnInit, OnDestroy {
     });
 
     this.userService.getUserProfile(this.authService.userInfo().uid).subscribe((userProfile: UserProfile) => {
-      this.userProfile = userProfile;
+      let key = Object.keys(userProfile)[0];
+      this.userProfile = userProfile[key];
     }, err => {
       console.log(`${err}, failed to load user profile`);
     });
