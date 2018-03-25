@@ -8,7 +8,7 @@ export const environment = {
     storageBucket: 'tic-tac-toe-acb7f.appspot.com',
     messagingSenderId: '741600020933'
   },
-  path: 'https://tricky-game.herokuapp.com:3000',
+  path: 'https://tricky-game.herokuapp.com/',
   secret: 'auth=bDej5ygCZmAucWVMlDzW3RW68c6TbrCk7rrclqFj',
   base: 'https://tic-tac-toe-acb7f.firebaseio.com'
 };
