@@ -6,6 +6,7 @@
     </mat-grid-tile>
   </mat-grid-list>
 </mat-card>
+<button mat-raised-button color='primary' *ngIf="enableReset" (click)="resetGame(gameProgress)">Reset Game</button>
 
 <!--<div class="container" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-around" fxLayout.lt-sm="column">-->
   <!--<app-game-board *ngIf="onGoingGame" fxFlex="40%"></app-game-board>-->

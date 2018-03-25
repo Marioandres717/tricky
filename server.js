@@ -17,10 +17,12 @@ const CreateNewGame = function() {
     players: [],
     currentPlayer: '',
     grid: [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    roomId: ''
+    roomId: '',
+    winner: ''
   };
 };
 const checkWinner = function(gameState) {
+  let emptyFields = false;
   for (let index = 0, gameLength = gameState.length; index < gameLength; index++) {
 
     let initial = index < 3 ? index * 3 : index < 6 ? index - 3 : index === 7 ? 0 : 2,
@@ -32,11 +34,12 @@ const checkWinner = function(gameState) {
       let position = initial + (i * range);
       gameState[position] ? count += gameState[position] : empty = true;
     }
+    if (empty) emptyFields = true;
     if (!empty && (count === 3) || (count === 6)) {
       return count / 3;
     }
   }
-  return 0;
+  return emptyFields ? 0 : -1;
 };
 
 const server = require('http').Server(app);
@@ -67,15 +70,47 @@ io.on('connection', function(socket) {
     });
 
     socket.on('player-move', function (gameStatus) {
-      let winnerIndex = checkWinner(gameStatus.grid);
-      if (!winnerIndex) {
-        gameStatus.currentPlayer === gameStatus.players[0]
-          ? gameStatus.currentPlayer = gameStatus.players[1]
-          : gameStatus.currentPlayer = gameStatus.players[0];
+      let canMove = false;
+      gameStatus.grid.forEach(function(position) {
+        if (!position) canMove = true;
+      });
 
+      if (canMove && gameStatus.winner === '') {
+        let winnerIndex = checkWinner(gameStatus.grid);
+
+        if (!winnerIndex) {
+          gameStatus.currentPlayer === gameStatus.players[0]
+            ? gameStatus.currentPlayer = gameStatus.players[1]
+            : gameStatus.currentPlayer = gameStatus.players[0];
+
+          io.in(gameStatus.roomId).emit('game-updated', gameStatus);
+        } else {
+          gameStatus.winner = winnerIndex !== -1 ? gameStatus.players[winnerIndex] : '';
+          gameStatus.currentPlayer = '';
+          io.in(gameStatus.roomId).emit('game-updated', gameStatus);
+          io.in(gameStatus.roomId).emit('game-over', gameStatus.winner);
+        }
+      }
+    });
+
+    socket.on('reset-game', function(gameInfo) {
+
+      let playerName = gameInfo.username,
+          gameStatus = gameInfo.gameStatus;
+
+      if (gameStatus.players.length === 2) {
+        gameStatus.players = [];
+        gameStatus.currentPlayer = '';
+        gameStatus.winner = '';
+      }
+
+      if (gameStatus.players.indexOf(playerName) === -1) {
+        gameStatus.players.push(playerName);
+        if (gameStatus.players.length === 2) {
+          gameStatus.grid = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+          gameStatus.currentPlayer = gameStatus.players[0];
+        }
         io.in(gameStatus.roomId).emit('game-updated', gameStatus);
-      } else {
-        io.in(gameStatus.roomId).emit('game-over', gameStatus.players[winnerIndex]);
       }
     });
 
