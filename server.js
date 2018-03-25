@@ -10,6 +10,7 @@ app.use(express.static(__dirname + '/dist'));
 // Heroku port
 // app.listen(process.env.PORT || 3000);
 
+const PORT  = process.env.PORT || 8080;
 
 const CreateNewGame = function() {
   return {
@@ -89,6 +90,6 @@ app.get('*', function(req, res) {
   res.sendFile(__dirname + '/dist/index.html');
 });
 
-server.listen(3000, function() {
-    console.log("Servidor corriendo en http://localhost:8080");
+server.listen(PORT, function() {
+    console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
