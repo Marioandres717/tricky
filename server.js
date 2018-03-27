@@ -98,7 +98,7 @@ io.on('connection', function(socket) {
           io.in(gameStatus.roomId).emit('game-over', gameStatus.winner);
         }
       } else {
-        console.log('no hay mas espacios');
+        io.in(gameStatus.roomId).emit('game-updated', gameStatus);
       }
     });
 
