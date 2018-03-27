@@ -4,7 +4,6 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/take';
-
 import * as firebase from 'firebase';
 
 @Injectable()
@@ -13,7 +12,7 @@ export class LoginGuard implements CanActivate {
   constructor(private router: Router) {}
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
     return this.onAuthStateChanged.map(authState => {
-      if (authState) this.router.navigate(['/home']);
+      if (authState) this.router.navigate(['/home']) ;
       return !authState
     }).take(1);
   }

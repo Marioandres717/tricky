@@ -13,18 +13,7 @@ export class AuthService {
   private isAuthenticated = false;
   authChange = new Subject<boolean>();
 
-  constructor( private uiService: UiService, private userService: UserService, private router: Router ) {
-    firebase.auth().onAuthStateChanged(function(user) {
-      if (user) {
-        console.log(user);
-        this.isAuthenticated = true;
-        // this.authChange.next(true);
-      } else {
-        this.isAuthenticated = false;
-        // this.authChange.next(false);
-      }
-    });
-  }
+  constructor( private uiService: UiService, private userService: UserService, private router: Router ) {}
 
   public userInfo() {
     return firebase.auth().currentUser;
