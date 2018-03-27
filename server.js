@@ -99,6 +99,7 @@ io.on('connection', function(socket) {
         }
       } else {
         io.in(gameStatus.roomId).emit('game-updated', gameStatus);
+        io.in(gameStatus.roomId).emit('game-over', '');
       }
     });
 
