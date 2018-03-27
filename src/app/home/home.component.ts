@@ -21,27 +21,38 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.gameTable.data = [];
-    this.session.getAllSessions().subscribe((sessions: NewSession[]) => {
-      let formedData = [];
-      for (let key in sessions) {
-        sessions[key]['id'] = key;
-        formedData.push(sessions[key]);
-        console.log(formedData);
-      }
-      this.gameTable.data = formedData;
-    }, err => {
-      console.log(err);
-    });
+    // this.session.getAllSessions().subscribe((sessions: NewSession[]) => {
+    //   let formedData = [];
+    //   for (let key in sessions) {
+    //     sessions[key]['id'] = key;
+    //     formedData.push(sessions[key]);
+    //   }
+    //   this.gameTable.data = formedData;
+    //
+    // }, err => {
+    //   console.log(err);
+    // });
 
     this.tablesRef.on('child_added', (newData) => {
-      this.gameTable.data.push(newData.val());
+      let newSession: NewSession[] = this.gameTable.data;
+      let session: NewSession = {
+        id: newData.key,
+        name: newData.val().name,
+        user: newData.val().user,
+        created: newData.val().created,
+        numberOfPlayers: newData.val().numberOfPlayers
+      };
+      newSession.push(session);
+      this.gameTable.data = newSession;
+      console.log(this.gameTable.data);
     });
-
+    //
     this.tablesRef.on('child_removed', (newData) => {
       let table = newData.val();
       this.gameTable.data.forEach((data, index) => {
         if (data.name === table.name && data.created === table.created) {
           this.gameTable.data.splice(index, 1);
+          console.log(this.gameTable.data);
         }
       });
     });
@@ -54,6 +65,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   onSubmitNewGame(gameID: string) {
     const userInfo = this.authService.userInfo();
     let newGame: NewSession = {
+      id: '',
       name: gameID,
       created: new Date(),
       user: userInfo.email,

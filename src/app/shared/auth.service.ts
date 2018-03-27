@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import * as firebase from 'firebase';
 import { Subject } from 'rxjs/Subject';
-import {UserService} from "../api/api.service";
+import {UserService} from '../api/api.service';
 import {UserProfile} from "../interfaces/user.model";
-import {UiService} from "./ui.service";
+import {UiService} from './ui.service';
 
 
 @Injectable()

@@ -5,8 +5,8 @@ import {LoginComponent} from './auth/login/login.component';
 import {AuthGuard} from './auth/auth.guard';
 import {HomeComponent} from './home/home.component';
 import {AiBoardComponent} from './ai-board/ai-board.component';
-import {GameComponent} from "./game/game.component";
-import {LoginGuard} from "./auth/login.guard";
+import {GameComponent} from './game/game.component';
+import {LoginGuard} from './auth/login.guard';
 
 const routes: Routes = [
   {path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
@@ -20,7 +20,7 @@ const routes: Routes = [
 @NgModule({
   imports: [
     CommonModule,
-    RouterModule.forRoot(routes) //, {enableTracing: true})
+    RouterModule.forRoot(routes)
   ],
   exports: [
     RouterModule
