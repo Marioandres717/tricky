@@ -43,21 +43,22 @@ export class GameComponent implements OnInit, OnDestroy {
   grid: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
   enableClick: boolean;
 
-  constructor(private router: Router, private socketService: SocketService, private authService: AuthService, private userService: UserService,
-              private uiService: UiService, private dialog: MatDialog, private sessionService: SessionService) {}
+  constructor(private router: Router, private socketService: SocketService, private authService: AuthService,
+              private userService: UserService, private uiService: UiService, private dialog: MatDialog,
+              private sessionService: SessionService) {}
 
   ngOnInit() {
     this.session = this.socketService.connectToServer(this.gameSession);
-    this.sessionService.updateSession(this.gameSession, {numberOfPlayers: +1}).subscribe((data) => {
-      console.log('la database fue actualizada!', data);
-    });
+    this.sessionService.updateSession(this.gameSession, {numberOfPlayers: 1}).subscribe();
 
     this.socketService.waitingForOpponent(this.session, (opponentFound: boolean) => {
       this.onGoingGame = opponentFound;
+      if (this.onGoingGame) {
+        this.sessionService.updateSession(this.gameSession, {numberOfPlayers: 2}).subscribe(result => console.log('Dos jugadores'));
+      }
     });
 
     this.socketService.gameUpdated(this.session, (gameStatus: GameProgress) => {
-      this.onGoingGame = true;
         if (gameStatus.players.length === 1) {
         console.log(`Opponent ${gameStatus.players[0]} is waiting for rematch `);
           const dialogRef = this.dialog.open(RematchComponent,  { data: {

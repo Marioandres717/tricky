@@ -69,6 +69,7 @@ io.on('connection', function(socket) {
         room.game.currentPlayer = room.game.players[0];
         room.game.roomId = roomId;
         io.in(roomId).emit('game-updated', room.game);
+        io.in(roomId).emit('waiting for opponent', true);
       } else {
         io.in(roomId).emit('waiting for opponent', false);
       }
