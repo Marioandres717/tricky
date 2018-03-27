@@ -1,21 +1,26 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Router} from "@angular/router";
-import {SocketService} from "../shared/socket.service";
-import {AuthService} from "../shared/auth.service";
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {SocketService} from '../shared/socket.service';
+import {AuthService} from '../shared/auth.service';
 import {UserService} from '../api/api.service';
-import {UserProfile} from "../interfaces/user.model";
+import {UserProfile} from '../interfaces/user.model';
+import {UiService} from '../shared/ui.service';
+import {PlayerLeftComponent} from './player-left.component';
+import {MatDialog} from '@angular/material';
+import {RematchComponent} from './rematch.component';
+
 
 export interface GameProgress {
-  players: string[],
-  currentPlayer: string,
-  grid: number[],
-  roomId: string,
-  winner: string
+  players: string[];
+  currentPlayer: string;
+  grid: number[];
+  roomId: string;
+  winner: string;
 }
 
 export interface User {
-  name: string,
-  assignedNumber: number
+  name: string;
+  assignedNumber: number;
 }
 
 @Component({
@@ -24,8 +29,8 @@ export interface User {
   styleUrls: ['./game.component.css']
 })
 
-export class GameComponent implements OnInit, OnDestroy {
-  private gameSession = this.router.url.replace('/game/','');
+export class GameComponent implements OnInit {
+  private gameSession = this.router.url.replace('/game/', '');
   private session: any;
   private gameProgress: GameProgress;
   private user: User = {
@@ -33,38 +38,72 @@ export class GameComponent implements OnInit, OnDestroy {
     assignedNumber: undefined
   };
   private userProfile: UserProfile;
+  private onGoingGame: boolean;
 
   grid: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-  enableReset: boolean = false;
+  enableClick: boolean;
 
-  constructor(private router: Router, private socketService: SocketService, private authService: AuthService, private userService: UserService) {}
+  constructor(private router: Router, private socketService: SocketService, private authService: AuthService, private userService: UserService,
+              private uiService: UiService, private dialog: MatDialog) {}
 
   ngOnInit() {
     this.session = this.socketService.connectToServer(this.gameSession);
+
+    this.socketService.waitingForOpponent(this.session, (opponentFound: boolean) => {
+      this.onGoingGame = opponentFound;
+    });
+
     this.socketService.gameUpdated(this.session, (gameStatus: GameProgress) => {
-
-      if (gameStatus.players.length === 1) {
+      this.onGoingGame = true;
+        if (gameStatus.players.length === 1) {
         console.log(`Opponent ${gameStatus.players[0]} is waiting for rematch `);
-          // show waiting for opponent message
+          const dialogRef = this.dialog.open(RematchComponent,  { data: {
+            opponentName: 'Do you want a rematch?'
+            }});
+          dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+              this.resetGame(gameStatus);
+            } else {
+              this.router.navigate(['/home']);
+            }
+          });
       }
-
+      if (gameStatus.currentPlayer === this.user.name) {
+          this.enableClick = true;
+      }
       this.gameProgress = gameStatus;
       this.user.assignedNumber = this.gameProgress.players.indexOf(this.user.name) + 1;
       this.grid = this.gameProgress.grid;
     });
 
+    this.socketService.disconnect(this.session, (opponentLeft: string) => {
+      const dialogRef = this.dialog.open(PlayerLeftComponent, { data: {
+          opponentInfo: opponentLeft
+          }});
+        dialogRef.afterClosed().subscribe(result => {
+          this.router.navigate(['/home']);
+        });
+    });
+
     this.socketService.gameOver(this.session, (gameOver) => {
+      if (gameOver === '') {
+        this.userProfile.user_total_games += 1;
+        this.userService.updateUserProfile(this.userProfile);
+        this.uiService.showSnackBar(`The game is a Draw`, null, 10000);
+        this.resetGame(this.gameProgress);
+      }
       if (gameOver === this.user.name) {
         this.userProfile.user_total_games += 1;
         this.userProfile.user_total_wins += 1;
         this.userService.updateUserProfile(this.userProfile);
-        //  show user winner message
+        this.uiService.showSnackBar(`Congratz ${gameOver} you have Won!`, null, 10000);
+        this.resetGame(this.gameProgress);
         } else {
         this.userProfile.user_total_games += 1;
         this.userService.updateUserProfile(this.userProfile);
-        //show loser message :(
+        this.uiService.showSnackBar(`You lose!, the winner is ${gameOver}`, null, 10000);
+        this.resetGame(this.gameProgress);
         }
-      this.enableReset = true;
     });
 
     this.userService.getUserProfile(this.authService.userInfo().uid).subscribe((userProfile: UserProfile) => {
@@ -75,17 +114,18 @@ export class GameComponent implements OnInit, OnDestroy {
     });
   }
 
-  private onPlayerClick(position: number) {
+  public onPlayerClick(position: number) {
     console.log(this.gameProgress);
-    if (this.gameProgress && this.gameProgress.currentPlayer === this.user.name) {
+    if (this.enableClick && this.gameProgress && this.gameProgress.currentPlayer === this.user.name) {
       if (!this.gameProgress.grid[position]) {
+        this.enableClick = false;
         this.gameProgress.grid[position] = this.user.assignedNumber;
         this.playerMove(this.gameProgress);
       } else {
-        console.log('position already selected message here');
+        this.uiService.showSnackBar('This space has been already taken!, play a different one', null, 3000);
       }
     } else {
-      console.log('Its not your turn message here!');
+      this.uiService.showSnackBar('You have to wait for your turn!', null, 3000);
     }
   }
 
@@ -95,8 +135,5 @@ export class GameComponent implements OnInit, OnDestroy {
 
   private resetGame(gameProgress: GameProgress) {
     this.socketService.resetGame(this.session, gameProgress);
-  }
-
-  ngOnDestroy() {
   }
 }

@@ -1,9 +1,9 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator, MatTableDataSource} from '@angular/material';
-import {NewSession} from '../game/table.model';
+import {NewSession} from '../interfaces/table.model';
 import {Router} from '@angular/router';
 import {SessionService} from '../api/api.service';
-import {AuthService} from "../shared/auth.service";
+import {AuthService} from '../shared/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -42,7 +42,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
       user: userInfo.email,
       numberOfPlayers: 0
     };
-    
+
     this.session.createSession(newGame).subscribe((data: any) => {
         this.router.navigate(['/game/', data.name]);
     }, err => {
