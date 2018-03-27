@@ -46,26 +46,33 @@ const server = require('http').Server(app);
 const io = require('socket.io')(server);
 
 io.on('connection', function(socket) {
+
     // PLAYER CLOSES THE BROWSER
     socket.on('disconnect', function() {
-      console.log('someone disconnect: ' + socket.id);
-      socket.to(socket.gameID).emit('opponent left', 'Your opponent left the game! YOU HAVE WON!');
+      io.to(socket.gameID).emit('opponent left', 'Your opponent left the game! YOU HAVE WON!');
+      socket.gameID = null;
+      socket.disconnect(true);
     });
 
     // GAME FUNCTIONS
     socket.on('join-game', function(playerInfo) {
+      console.log('join-game', playerInfo);
       let roomId = playerInfo.gameID,
           playerName = playerInfo.username,
           room;
 
       socket.join(roomId);
+      socket.gameID = roomId;
       room = io.sockets.adapter.rooms[roomId];
       if (room && room.game === undefined) room.game = new CreateNewGame();
+      console.log(room.game);
       room.game.players.push(playerName);
       if (room.length === 2) {
         room.game.currentPlayer = room.game.players[0];
         room.game.roomId = roomId;
         io.in(roomId).emit('game-updated', room.game);
+      } else {
+        io.in(roomId).emit('waiting for opponent', false);
       }
     });
 
@@ -85,11 +92,14 @@ io.on('connection', function(socket) {
 
           io.in(gameStatus.roomId).emit('game-updated', gameStatus);
         } else {
-          gameStatus.winner = winnerIndex !== -1 ? gameStatus.players[winnerIndex] : '';
+          gameStatus.winner = winnerIndex !== -1 ? gameStatus.players[winnerIndex - 1] : '';
           gameStatus.currentPlayer = '';
           io.in(gameStatus.roomId).emit('game-updated', gameStatus);
           io.in(gameStatus.roomId).emit('game-over', gameStatus.winner);
         }
+      } else {
+        io.in(gameStatus.roomId).emit('game-updated', gameStatus);
+        io.in(gameStatus.roomId).emit('game-over', '');
       }
     });
 
@@ -110,7 +120,7 @@ io.on('connection', function(socket) {
           gameStatus.grid = [0, 0, 0, 0, 0, 0, 0, 0, 0];
           gameStatus.currentPlayer = gameStatus.players[0];
         }
-        io.in(gameStatus.roomId).emit('game-updated', gameStatus);
+        socket.to(gameStatus.roomId).emit('game-updated', gameStatus);
       }
     });
 

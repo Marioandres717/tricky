@@ -5,7 +5,7 @@ import {LoginComponent} from './auth/login/login.component';
 import {AuthGuard} from './auth/auth.guard';
 import {HomeComponent} from './home/home.component';
 import { PageNotFoundComponent } from './not-found.component';
-import {AiBoardComponent} from './ai-board/ai-board/ai-board.component';
+import {AiBoardComponent} from './ai-board/ai-board.component';
 import {GameComponent} from "./game/game.component";
 
 const routes: Routes = [

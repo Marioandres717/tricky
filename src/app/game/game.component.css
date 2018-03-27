@@ -33,4 +33,6 @@ mat-grid-tile {
   max-height: 500px;
 }
 
-
+.waiting {
+  padding: auto;
+}

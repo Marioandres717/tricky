@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {environment} from '../../environments/environment';
-import {NewSession} from '../game/table.model';
-import {UserProfile} from "../interfaces/user.model";
+import {NewSession} from '../interfaces/table.model';
+import {UserProfile} from '../interfaces/user.model';
 
 @Injectable()
 export class SessionService {

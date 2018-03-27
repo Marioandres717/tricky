@@ -15,37 +15,30 @@ import {SessionService, UserService} from './api/api.service';
 import {environment} from '../environments/environment';
 
 import { AppComponent } from './app.component';
-import { HeaderComponent } from './navigation/header/header.component';
-import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.component';
 import { LoginComponent } from './auth/login/login.component';
 import { GameComponent } from './game/game.component';
-import {GameService} from './game/game.service';
-import { GameBoardComponent } from './game/game-board/game-board.component';
-import { PlayerLeftComponent } from './game/game-board/player-left.component';
-import { NewGameComponent } from './game/new-game/new-game.component';
+import { PlayerLeftComponent } from './game/player-left.component';
 import { ChatComponent } from './chat/chat.component';
 import { HomeComponent } from './home/home.component';
 import { AuthService } from './shared/auth.service';
 import {UiService} from './shared/ui.service';
 import { PageNotFoundComponent } from './not-found.component';
 import { SocketService } from './shared/socket.service';
-import {AiService} from './game/ai.service';
-import { AiBoardComponent } from './ai-board/ai-board/ai-board.component';
+import {AiService} from './shared/ai.service';
+import { AiBoardComponent } from './ai-board/ai-board.component';
+import {RematchComponent} from './game/rematch.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HeaderComponent,
-    SidenavListComponent,
     LoginComponent,
     GameComponent,
-    GameBoardComponent,
     PlayerLeftComponent,
-    NewGameComponent,
     ChatComponent,
     HomeComponent,
     PageNotFoundComponent,
-    AiBoardComponent
+    AiBoardComponent,
+    RematchComponent
   ],
   imports: [
     MatTableModule,
@@ -62,8 +55,8 @@ import { AiBoardComponent } from './ai-board/ai-board/ai-board.component';
     AppRoutingModule,
     HttpClientModule
   ],
-  entryComponents: [PlayerLeftComponent],
-  providers: [GameService, AuthService,  UiService, SocketService, AiService, SessionService, UserService],
+  entryComponents: [PlayerLeftComponent, RematchComponent],
+  providers: [AuthService,  UiService, SocketService, AiService, SessionService, UserService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
