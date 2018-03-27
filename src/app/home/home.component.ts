@@ -44,15 +44,29 @@ export class HomeComponent implements OnInit, AfterViewInit {
       };
       newSession.push(session);
       this.gameTable.data = newSession;
-      console.log(this.gameTable.data);
+      // console.log(this.gameTable.data);
     });
-    //
+
+    this.tablesRef.on('child_changed', (newData) => {
+      console.log(newData.val());
+      let table = newData.val();
+      let copy = this.gameTable.data;
+      copy.forEach((data, index) => {
+        if (data.name === table.name && data.created === table.created && (data.numberOfPlayers !== table.numberOfPlayers) ) {
+          copy[index].numberOfPlayers = table.numberOfPlayers;
+          this.gameTable.data = copy;
+          console.log(this.gameTable.data);
+        }});
+    });
+
     this.tablesRef.on('child_removed', (newData) => {
       let table = newData.val();
-      this.gameTable.data.forEach((data, index) => {
+      let copy = this.gameTable.data;
+      copy.forEach((data, index) => {
         if (data.name === table.name && data.created === table.created) {
-          this.gameTable.data.splice(index, 1);
-          console.log(this.gameTable.data);
+          copy.splice(index, 1);
+          this.gameTable.data = copy;
+          // console.log(this.gameTable.data);
         }
       });
     });

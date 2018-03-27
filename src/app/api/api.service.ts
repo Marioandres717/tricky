@@ -22,6 +22,11 @@ export class SessionService {
   createSession(params: NewSession) {
     return this.http.post(`${this.base}/gameTables.json?${this.auth}`, params);
   }
+
+  updateSession(params: NewSession) {
+    return this.http.patch(`{this.base}/gameTables.json?${this.auth}`, params);
+  }
+
 }
 
 @Injectable()

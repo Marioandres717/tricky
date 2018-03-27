@@ -3,17 +3,20 @@ import { Router } from '@angular/router';
 import * as firebase from 'firebase';
 import { Subject } from 'rxjs/Subject';
 import {UserService} from '../api/api.service';
-import {UserProfile} from "../interfaces/user.model";
+import {UserProfile} from '../interfaces/user.model';
 import {UiService} from './ui.service';
 
 
 @Injectable()
 export class AuthService {
   user: any;
-  private isAuthenticated = false;
   authChange = new Subject<boolean>();
 
-  constructor( private uiService: UiService, private userService: UserService, private router: Router ) {}
+  constructor( private uiService: UiService, private userService: UserService, private router: Router ) {
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) { this.authChange.next(true); } else { this.authChange.next(false); }
+    });
+  }
 
   public userInfo() {
     return firebase.auth().currentUser;
@@ -45,11 +48,6 @@ export class AuthService {
     const provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithPopup(provider)
   }
-
-  public getAuthState() {
-    return this.isAuthenticated;
-  }
-
   public signOut() {
     firebase.auth().signOut();
   }
