@@ -35,11 +35,17 @@ export class SocketService {
   public resetGame(socket: any, gameStatus: any) {
     socket.emit('reset-game', { username: this.userInfo.email, gameStatus: gameStatus });
   }
+
   public disconnect(socket: any, disconnectFunction) {
     socket.on('opponent left', disconnectFunction);
   }
+
   public waitingForOpponent(socket: any, waitingFunction) {
     socket.on('waiting for opponent', waitingFunction);
+  }
+
+  public disconnectSession(socket: any) {
+    socket.disconnect();
   }
 
 }

@@ -46,18 +46,17 @@ const server = require('http').Server(app);
 const io = require('socket.io')(server);
 
 io.on('connection', function(socket) {
+
     // PLAYER CLOSES THE BROWSER
-  console.log('nuevo socket', socket.id);
     socket.on('disconnect', function() {
-      console.log('someone disconnect: ' + socket.id);
       io.to(socket.gameID).emit('opponent left', 'Your opponent left the game! YOU HAVE WON!');
       socket.gameID = null;
       socket.disconnect(true);
-      console.log(socket.id);
     });
 
     // GAME FUNCTIONS
     socket.on('join-game', function(playerInfo) {
+      console.log('join-game', playerInfo);
       let roomId = playerInfo.gameID,
           playerName = playerInfo.username,
           room;

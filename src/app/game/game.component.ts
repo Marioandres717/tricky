@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {Router} from '@angular/router';
 import {SocketService} from '../shared/socket.service';
 import {AuthService} from '../shared/auth.service';
@@ -29,7 +29,7 @@ export interface User {
   styleUrls: ['./game.component.css']
 })
 
-export class GameComponent implements OnInit {
+export class GameComponent implements OnInit, OnDestroy {
   private gameSession = this.router.url.replace('/game/', '');
   private session: any;
   private gameProgress: GameProgress;
@@ -112,6 +112,10 @@ export class GameComponent implements OnInit {
     }, err => {
       console.log(`${err}, failed to load user profile`);
     });
+  }
+
+  ngOnDestroy() {
+    this.socketService.disconnectSession(this.session);
   }
 
   public onPlayerClick(position: number) {
