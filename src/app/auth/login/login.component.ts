@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormGroup, Validators, FormControl} from '@angular/forms';
 import {AuthService} from '../../shared/auth.service';
-import {Router} from '@angular/router';
-import { UiService } from '../../shared/ui.service';
-
 
 interface Login {
   email: string;
@@ -19,7 +16,7 @@ export class LoginComponent implements OnInit {
   login: FormGroup;
   signUp: FormGroup;
   loading: boolean;
-  constructor( private auth: AuthService, private router: Router,  private uiService: UiService ) { }
+  constructor( private auth: AuthService) { }
 
   ngOnInit() {
     this.login = new FormGroup({
@@ -41,11 +38,7 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmitLogin(form: FormGroup) {
-    this.auth.loginUser(form.value.email, form.value.password).then((data) => {
-          this.router.navigate(['/home']);
-    }, (err) => {
-      this.uiService.showSnackBar(err.message, null, 3000);
-    });
+    this.auth.loginUser(form.value.email, form.value.password);
   }
 
   googleLogin() {

@@ -5,8 +5,6 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {AppRoutingModule} from './app-routing.module';
 import {MaterialModule} from './material.module';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {AuthModule} from './auth/auth.module';
-import {AngularFireModule} from 'angularfire2';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material';
 import { HttpClientModule } from '@angular/common/http';
@@ -24,10 +22,13 @@ import { AuthService } from './shared/auth.service';
 import {UiService} from './shared/ui.service';
 import { PageNotFoundComponent } from './not-found.component';
 import { SocketService } from './shared/socket.service';
-import {AiService} from './shared/ai.service';
+import { AiService } from './shared/ai.service';
 import { AiBoardComponent } from './ai-board/ai-board.component';
-import {RematchComponent} from './game/rematch.component';
+import { RematchComponent } from './game/rematch.component';
 
+import * as firebase from "firebase";
+
+firebase.initializeApp(environment.firebase);
 @NgModule({
   declarations: [
     AppComponent,
@@ -50,10 +51,8 @@ import {RematchComponent} from './game/rematch.component';
     ReactiveFormsModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
-    AngularFireModule.initializeApp(environment.firebase),
-    AuthModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
   ],
   entryComponents: [PlayerLeftComponent, RematchComponent],
   providers: [AuthService,  UiService, SocketService, AiService, SessionService, UserService],
