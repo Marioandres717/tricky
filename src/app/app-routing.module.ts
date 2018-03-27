@@ -14,7 +14,7 @@ const routes: Routes = [
   {path: 'login', component: LoginComponent, canActivate: [LoginGuard]},
   {path: 'ai', component: AiBoardComponent },
   {path: '', redirectTo: '/login', pathMatch: 'full'},
-  {path: '**', redirectTo: '/home'},
+  {path: '**', redirectTo: '/login'},
 ];
 
 @NgModule({
