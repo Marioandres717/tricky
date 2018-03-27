@@ -26,7 +26,7 @@ import { AiService } from './shared/ai.service';
 import { AiBoardComponent } from './ai-board/ai-board.component';
 import { RematchComponent } from './game/rematch.component';
 
-import * as firebase from "firebase";
+import * as firebase from 'firebase';
 
 firebase.initializeApp(environment.firebase);
 @NgModule({

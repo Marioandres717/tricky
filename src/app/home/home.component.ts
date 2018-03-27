@@ -1,9 +1,10 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator, MatTableDataSource} from '@angular/material';
 import {NewSession} from '../interfaces/table.model';
 import {Router} from '@angular/router';
 import {SessionService} from '../api/api.service';
 import {AuthService} from '../shared/auth.service';
+import * as firebase from 'firebase';
 
 @Component({
   selector: 'app-home',
@@ -14,19 +15,35 @@ export class HomeComponent implements OnInit, AfterViewInit {
   displayedColumns = ['user', 'created', 'number of players', 'join'];
   gameTable = new MatTableDataSource<NewSession>();
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  tablesRef = firebase.database().ref('gameTables/');
 
   constructor(private session: SessionService, private router: Router, private authService: AuthService) {}
 
   ngOnInit() {
+    this.gameTable.data = [];
     this.session.getAllSessions().subscribe((sessions: NewSession[]) => {
       let formedData = [];
       for (let key in sessions) {
         sessions[key]['id'] = key;
         formedData.push(sessions[key]);
+        console.log(formedData);
       }
       this.gameTable.data = formedData;
     }, err => {
       console.log(err);
+    });
+
+    this.tablesRef.on('child_added', (newData) => {
+      this.gameTable.data.push(newData.val());
+    });
+
+    this.tablesRef.on('child_removed', (newData) => {
+      let table = newData.val();
+      this.gameTable.data.forEach((data, index) => {
+        if (data.name === table.name && data.created === table.created) {
+          this.gameTable.data.splice(index, 1);
+        }
+      });
     });
   }
 
