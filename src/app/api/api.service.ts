@@ -23,8 +23,11 @@ export class SessionService {
     return this.http.post(`${this.base}/gameTables.json?${this.auth}`, params);
   }
 
-  updateSession(params: NewSession) {
-    return this.http.patch(`{this.base}/gameTables.json?${this.auth}`, params);
+  updateSession(sessionId: string, params: any) {
+    return this.http.patch(`${this.base}/gameTables/${sessionId}.json?${this.auth}`, params);
+  }
+  deleteSession(sessionId: string) {
+    return this.http.delete(`${this.base}/gameTables/${sessionId}.json?${this.auth}`);
   }
 
 }
@@ -57,7 +60,7 @@ export class UserService {
       */
       let key = Object.keys(data)[0];
       this.http.patch(`${this.base}/users/${key}.json?${this.auth}`, params)
-        .subscribe(() => {}, err => console.log(`${err}, failed to update user profile`))
+        .subscribe(() => {}, err => console.log(`${err}, failed to update user profile`));
     }, err => {
       console.log(`${err}, failed to get user profile`);
     });

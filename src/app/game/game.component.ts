@@ -2,7 +2,7 @@ import {Component, OnInit, OnDestroy} from '@angular/core';
 import {Router} from '@angular/router';
 import {SocketService} from '../shared/socket.service';
 import {AuthService} from '../shared/auth.service';
-import {UserService} from '../api/api.service';
+import {SessionService, UserService} from '../api/api.service';
 import {UserProfile} from '../interfaces/user.model';
 import {UiService} from '../shared/ui.service';
 import {PlayerLeftComponent} from './player-left.component';
@@ -44,10 +44,13 @@ export class GameComponent implements OnInit, OnDestroy {
   enableClick: boolean;
 
   constructor(private router: Router, private socketService: SocketService, private authService: AuthService, private userService: UserService,
-              private uiService: UiService, private dialog: MatDialog) {}
+              private uiService: UiService, private dialog: MatDialog, private sessionService: SessionService) {}
 
   ngOnInit() {
     this.session = this.socketService.connectToServer(this.gameSession);
+    this.sessionService.updateSession(this.gameSession, {numberOfPlayers: +1}).subscribe((data) => {
+      console.log('la database fue actualizada!', data);
+    });
 
     this.socketService.waitingForOpponent(this.session, (opponentFound: boolean) => {
       this.onGoingGame = opponentFound;
@@ -64,6 +67,7 @@ export class GameComponent implements OnInit, OnDestroy {
             if (result) {
               this.resetGame(gameStatus);
             } else {
+              this.sessionService.deleteSession(this.gameSession).subscribe();
               this.router.navigate(['/home']);
             }
           });
@@ -81,6 +85,7 @@ export class GameComponent implements OnInit, OnDestroy {
           opponentInfo: opponentLeft
           }});
         dialogRef.afterClosed().subscribe(result => {
+          this.sessionService.deleteSession(this.gameSession).subscribe();
           this.router.navigate(['/home']);
         });
     });

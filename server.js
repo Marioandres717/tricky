@@ -56,7 +56,6 @@ io.on('connection', function(socket) {
 
     // GAME FUNCTIONS
     socket.on('join-game', function(playerInfo) {
-      console.log('join-game', playerInfo);
       let roomId = playerInfo.gameID,
           playerName = playerInfo.username,
           room;
@@ -65,7 +64,6 @@ io.on('connection', function(socket) {
       socket.gameID = roomId;
       room = io.sockets.adapter.rooms[roomId];
       if (room && room.game === undefined) room.game = new CreateNewGame();
-      console.log(room.game);
       room.game.players.push(playerName);
       if (room.length === 2) {
         room.game.currentPlayer = room.game.players[0];
@@ -126,7 +124,6 @@ io.on('connection', function(socket) {
 
     //CHAT FUNCTIONS
     socket.on('send-message', function(message) {
-      console.log(message);
       socket.to(socket.gameID).emit('receive-message', message);
     });
 });

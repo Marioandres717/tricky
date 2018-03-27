@@ -55,7 +55,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         if (data.name === table.name && data.created === table.created && (data.numberOfPlayers !== table.numberOfPlayers) ) {
           copy[index].numberOfPlayers = table.numberOfPlayers;
           this.gameTable.data = copy;
-          console.log(this.gameTable.data);
+          // console.log(this.gameTable.data);
         }});
     });
 
