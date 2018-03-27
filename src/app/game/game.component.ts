@@ -91,13 +91,13 @@ export class GameComponent implements OnInit, OnDestroy {
     });
 
     this.socketService.gameOver(this.session, (gameOver) => {
-      if (gameOver === '') {
+      console.log(gameOver);
+      if (gameOver === 'draw') {
         this.userProfile.user_total_games += 1;
         this.userService.updateUserProfile(this.userProfile);
         this.uiService.showSnackBar(`The game is a Draw`, null, 10000);
         this.resetGame(this.gameProgress);
-      }
-      if (gameOver === this.user.name) {
+      } else if (gameOver === this.user.name) {
         this.userProfile.user_total_games += 1;
         this.userProfile.user_total_wins += 1;
         this.userService.updateUserProfile(this.userProfile);
