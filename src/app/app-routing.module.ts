@@ -4,17 +4,17 @@ import {RouterModule, Routes} from '@angular/router';
 import {LoginComponent} from './auth/login/login.component';
 import {AuthGuard} from './auth/auth.guard';
 import {HomeComponent} from './home/home.component';
-import { PageNotFoundComponent } from './not-found.component';
 import {AiBoardComponent} from './ai-board/ai-board.component';
 import {GameComponent} from "./game/game.component";
+import {LoginGuard} from "./auth/login.guard";
 
 const routes: Routes = [
   {path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
   {path: 'game/:id', component: GameComponent, canActivate: [AuthGuard] },
-  {path: 'login', component: LoginComponent},
+  {path: 'login', component: LoginComponent, canActivate: [LoginGuard]},
   {path: 'ai', component: AiBoardComponent },
   {path: '', redirectTo: '/login', pathMatch: 'full'},
-  {path: '**', component: PageNotFoundComponent},
+  {path: '**', redirectTo: '/home'},
 ];
 
 @NgModule({
@@ -26,6 +26,6 @@ const routes: Routes = [
     RouterModule
   ],
   declarations: [],
-  providers: [AuthGuard]
+  providers: [AuthGuard, LoginGuard]
 })
 export class AppRoutingModule { }
