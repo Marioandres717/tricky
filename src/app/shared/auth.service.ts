@@ -57,8 +57,26 @@ export class AuthService {
   }
 
   public googleLogin() {
+    let self = this;
     const provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithPopup(provider)
+    firebase.auth().signInWithPopup(provider).then((user) => {
+      let userProfile = user.additionalUserInfo.profile;
+      let params: UserProfile = {
+        user_uid: user.user.uid,
+        user_email: userProfile.email,
+        user_nickname: userProfile.name,
+        user_total_wins: 0,
+        user_total_games: 0
+      };
+      self.userService.getUserProfile(user.user.uid).subscribe((data) => {
+        if (!Object.keys(data).length) {
+          self.userService.createUserProfile(params)
+            .subscribe(() => self.router.navigate(['/home']), (err) => console.log('error creating user profile'));
+        } else {
+          self.router.navigate(['/home']);
+        }
+      });
+    })
   }
   public signOut() {
     firebase.auth().signOut();
