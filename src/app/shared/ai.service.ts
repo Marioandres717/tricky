@@ -181,7 +181,6 @@ export class AiService {
       }
     }
     // After this AI takes over
-    console.log('this is the best move: ', this.initturn);
     let bestMove = this.minimax(this.state , 'O');
 
     return bestMove[this.position];
