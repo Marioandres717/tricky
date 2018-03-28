@@ -51,25 +51,30 @@ export class GameComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.session = this.socketService.connectToServer(this.gameSession);
     this.sessionService.getSession(this.gameSession).subscribe((session: NewSession) => {
-      let playersLeft = session.numberOfPlayers += 1;
-      if (playersLeft === 2) this.onGoingGame = true;
-      this.sessionService.updateSession(this.gameSession, {numberOfPlayers: playersLeft});
+      let players = session.players || [];
+      if (players.indexOf(this.user.name) === -1) players.push(this.user.name);
+      let params: any = {
+        numberOfPlayers: players.length,
+        players: players
+      };
+      this.sessionService.updateSession(this.gameSession, params);
     });
 
     this.socketService.gameUpdated(this.session, (gameStatus: GameProgress) => {
-        if (gameStatus.players.length === 1) {
+      this.onGoingGame = true;
+      if (gameStatus.players.length === 1) {
         console.log(`Opponent ${gameStatus.players[0]} is waiting for rematch `);
-          const dialogRef = this.dialog.open(RematchComponent,  { data: {
-            opponentName: 'Do you want a rematch?'
-            }});
-          dialogRef.afterClosed().subscribe(result => {
-            if (result) {
-              this.resetGame(gameStatus);
-            } else {
-              this.sessionService.deleteSession(this.gameSession);
-              this.router.navigate(['/home']);
-            }
-          });
+        const dialogRef = this.dialog.open(RematchComponent,  { data: {
+          opponentName: 'Do you want a rematch?'
+        }});
+        dialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            this.resetGame(gameStatus);
+          } else {
+            this.sessionService.deleteSession(this.gameSession);
+            this.router.navigate(['/home']);
+          }
+        });
       }
       if (gameStatus.currentPlayer === this.user.name) {
           this.enableClick = true;
@@ -120,10 +125,15 @@ export class GameComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.sessionService.getSession(this.gameSession).subscribe((session: NewSession) => {
-      let playersLeft = session.numberOfPlayers -= 1;
-      playersLeft
-        ? this.sessionService.updateSession(this.gameSession, {numberOfPlayers: playersLeft})
-        : this.sessionService.deleteSession(this.gameSession)
+      let players = session.players || [];
+      if (players.indexOf(this.user.name) !== -1) players.splice(players.indexOf(this.user.name));
+      let params: any = {
+        numberOfPlayers: players.length,
+        players: players
+      };
+      params.numberOfPlayers
+        ? this.sessionService.updateSession(this.gameSession, params)
+        : this.sessionService.deleteSession(this.gameSession);
     });
     this.socketService.disconnectSession(this.session);
   }

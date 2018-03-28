@@ -16,7 +16,13 @@ export class AuthService {
 
   constructor( private uiService: UiService, private userService: UserService, private router: Router ) {
     firebase.auth().onAuthStateChanged(user => {
-      if (user) { this._isAdmin$.next(true) } else { this._isAdmin$.next(false) }
+      if (user) {
+        this._isAdmin$.next(true);
+        this.authChange.next(true);
+      } else {
+        this._isAdmin$.next(false);
+        this.authChange.next(false);
+      }
     });
   }
 

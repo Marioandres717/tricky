@@ -4,4 +4,5 @@ export interface NewSession {
   user: string;
   created: Date;
   numberOfPlayers: number;
+  players: Array<string>;
 }

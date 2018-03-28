@@ -40,7 +40,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
         name: newData.val().name,
         user: newData.val().user,
         created: newData.val().created,
-        numberOfPlayers: newData.val().numberOfPlayers
+        numberOfPlayers: newData.val().numberOfPlayers,
+        players: newData.val().players
       };
       newSession.push(session);
       this.gameTable.data = newSession;
@@ -79,7 +80,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
       name: gameID,
       created: new Date(),
       user: userInfo.email,
-      numberOfPlayers: 0
+      numberOfPlayers: 0,
+      players: []
     };
 
     this.session.createSession(newGame).subscribe((data: any) => {
