@@ -1,3 +1,6 @@
+/*@import "../node_modules/font-awesome/css/font-awesome.scss";*/
+@import "../../../node_modules/font-awesome/css/font-awesome.css";
+
 .container {
   padding-top: 50px;
 }

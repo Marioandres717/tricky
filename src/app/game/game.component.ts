@@ -39,7 +39,7 @@ export class GameComponent implements OnInit, OnDestroy {
     assignedNumber: undefined
   };
   private userProfile: UserProfile;
-  private onGoingGame: boolean = false;
+  private onGoingGame: boolean = true;
 
   grid: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
   enableClick: boolean;

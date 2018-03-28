@@ -7,8 +7,8 @@
   <mat-card class="mat-elevation-z3 size">
     <mat-grid-list class="tic-tac-grid" cols="3" >
       <mat-grid-tile *ngFor="let position of grid; let i = index;" (click)="onPlayerClick(i)">
-        <!--<i [class]="position === user.assignedNumber ? 'material-icons clear' : 'material-icons panorama_fish_eye'">{{position}}</i>-->
-        <i *ngIf="position">{{ position }}</i>
+        <i *ngIf="position === 1" class="fas fa-times"></i>
+        <i *ngIf="position === 2" class="fal fa-circle"></i>
       </mat-grid-tile>
     </mat-grid-list>
   </mat-card>
