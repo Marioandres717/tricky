@@ -8,6 +8,7 @@ import {UiService} from '../shared/ui.service';
 import {PlayerLeftComponent} from './player-left.component';
 import {MatDialog} from '@angular/material';
 import {RematchComponent} from './rematch.component';
+import {NewSession} from "../interfaces/table.model";
 
 
 export interface GameProgress {
@@ -38,7 +39,7 @@ export class GameComponent implements OnInit, OnDestroy {
     assignedNumber: undefined
   };
   private userProfile: UserProfile;
-  private onGoingGame: boolean;
+  private onGoingGame: boolean = false;
 
   grid: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
   enableClick: boolean;
@@ -49,8 +50,10 @@ export class GameComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.session = this.socketService.connectToServer(this.gameSession);
-    this.sessionService.getSession(this.gameSession).subscribe(session => {
-      this.sessionService.updateSession(this.gameSession, {numberOfPlayers: session.numberOfPlayers += 1});
+    this.sessionService.getSession(this.gameSession).subscribe((session: NewSession) => {
+      let playersLeft = session.numberOfPlayers += 1;
+      if (playersLeft === 2) this.onGoingGame = true;
+      this.sessionService.updateSession(this.gameSession, {numberOfPlayers: playersLeft});
     });
 
     this.socketService.gameUpdated(this.session, (gameStatus: GameProgress) => {
@@ -63,7 +66,7 @@ export class GameComponent implements OnInit, OnDestroy {
             if (result) {
               this.resetGame(gameStatus);
             } else {
-              this.sessionService.deleteSession(this.gameSession).subscribe();
+              this.sessionService.deleteSession(this.gameSession);
               this.router.navigate(['/home']);
             }
           });
@@ -81,7 +84,7 @@ export class GameComponent implements OnInit, OnDestroy {
           opponentInfo: opponentLeft
           }});
         dialogRef.afterClosed().subscribe(result => {
-          this.sessionService.deleteSession(this.gameSession).subscribe();
+          this.sessionService.deleteSession(this.gameSession);
           this.router.navigate(['/home']);
         });
     });
@@ -116,11 +119,11 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.sessionService.getSession(this.gameSession).subscribe(session => {
+    this.sessionService.getSession(this.gameSession).subscribe((session: NewSession) => {
       let playersLeft = session.numberOfPlayers -= 1;
       playersLeft
-        ? this.sessionService.updateSession(this.gameSession, {numberOfPlayers: session.numberOfPlayers -= 1});
-        : this.sessionService.deleteSession(this.gameSession);
+        ? this.sessionService.updateSession(this.gameSession, {numberOfPlayers: playersLeft})
+        : this.sessionService.deleteSession(this.gameSession)
     });
     this.socketService.disconnectSession(this.session);
   }
