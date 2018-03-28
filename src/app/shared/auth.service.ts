@@ -5,17 +5,23 @@ import { Subject } from 'rxjs/Subject';
 import {UserService} from '../api/api.service';
 import {UserProfile} from '../interfaces/user.model';
 import {UiService} from './ui.service';
-
+import {ReplaySubject} from "rxjs";
 
 @Injectable()
 export class AuthService {
   user: any;
   authChange = new Subject<boolean>();
 
+  private _isAdmin$ = new ReplaySubject(1);
+
   constructor( private uiService: UiService, private userService: UserService, private router: Router ) {
     firebase.auth().onAuthStateChanged(user => {
-      if (user) { this.authChange.next(true); } else { this.authChange.next(false); }
+      if (user) { this._isAdmin$.next(true) } else { this._isAdmin$.next(false) }
     });
+  }
+
+  public isLogged() {
+    return this._isAdmin$.asObservable();
   }
 
   public userInfo() {

@@ -32,7 +32,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
     // }, err => {
     //   console.log(err);
     // });
-
     this.tablesRef.on('child_added', (newData) => {
       let newSession: NewSession[] = this.gameTable.data;
       let session: NewSession = {
@@ -44,7 +43,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
       };
       newSession.push(session);
       this.gameTable.data = newSession;
-      // console.log(this.gameTable.data);
     });
 
     this.tablesRef.on('child_changed', (newData) => {
@@ -55,7 +53,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
         if (data.name === table.name && data.created === table.created && (data.numberOfPlayers !== table.numberOfPlayers) ) {
           copy[index].numberOfPlayers = table.numberOfPlayers;
           this.gameTable.data = copy;
-          // console.log(this.gameTable.data);
         }});
     });
 
@@ -66,7 +63,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
         if (data.name === table.name && data.created === table.created) {
           copy.splice(index, 1);
           this.gameTable.data = copy;
-          // console.log(this.gameTable.data);
         }
       });
     });
