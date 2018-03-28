@@ -2,13 +2,16 @@
   <div class="row">
 
     <div class="col-lg-4 col-md-4 espacio">
-      <input type="text" placeholder="create Game" #gameId>
-      <button mat-raised-button color='primary' (click)="onSubmitNewGame(gameId.value)">Create Game</button>
+      <input type="text" placeholder="create Game" [(ngModel)]="newGameName">
+      <button mat-raised-button color='primary' [disabled]="!newGameName" (click)="onSubmitNewGame(newGameName)">Create Game</button>
     </div>
 
     <div class="col-lg-8 col-md-8">
       <mat-table [dataSource]='gameTable'>
-
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+          <mat-cell *matCellDef="let user"> {{user.name}} </mat-cell>
+        </ng-container>
         <ng-container matColumnDef="user">
           <mat-header-cell *matHeaderCellDef> User </mat-header-cell>
           <mat-cell *matCellDef="let user"> {{user.user}} </mat-cell>

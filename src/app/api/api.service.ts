@@ -24,10 +24,10 @@ export class SessionService {
   }
 
   updateSession(sessionId: string, params: any) {
-    return this.http.patch(`${this.base}/gameTables/${sessionId}.json?${this.auth}`, params);
+    this.http.patch(`${this.base}/gameTables/${sessionId}.json?${this.auth}`, params).subscribe();
   }
   deleteSession(sessionId: string) {
-    return this.http.delete(`${this.base}/gameTables/${sessionId}.json?${this.auth}`);
+    this.http.delete(`${this.base}/gameTables/${sessionId}.json?${this.auth}`).subscribe();
   }
 
 }

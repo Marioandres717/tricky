@@ -49,13 +49,8 @@ export class GameComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.session = this.socketService.connectToServer(this.gameSession);
-    this.sessionService.updateSession(this.gameSession, {numberOfPlayers: 1}).subscribe();
-
-    this.socketService.waitingForOpponent(this.session, (opponentFound: boolean) => {
-      this.onGoingGame = opponentFound;
-      if (this.onGoingGame) {
-        this.sessionService.updateSession(this.gameSession, {numberOfPlayers: 2}).subscribe(result => console.log('Dos jugadores'));
-      }
+    this.sessionService.getSession(this.gameSession).subscribe(session => {
+      this.sessionService.updateSession(this.gameSession, {numberOfPlayers: session.numberOfPlayers += 1});
     });
 
     this.socketService.gameUpdated(this.session, (gameStatus: GameProgress) => {
@@ -121,6 +116,12 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.sessionService.getSession(this.gameSession).subscribe(session => {
+      let playersLeft = session.numberOfPlayers -= 1;
+      playersLeft
+        ? this.sessionService.updateSession(this.gameSession, {numberOfPlayers: session.numberOfPlayers -= 1});
+        : this.sessionService.deleteSession(this.gameSession);
+    });
     this.socketService.disconnectSession(this.session);
   }
 

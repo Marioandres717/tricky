@@ -12,10 +12,11 @@ import * as firebase from 'firebase';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit, AfterViewInit {
-  displayedColumns = ['user', 'created', 'number of players', 'join'];
+  displayedColumns = ['name', 'user', 'created', 'number of players', 'join'];
   gameTable = new MatTableDataSource<NewSession>();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   tablesRef = firebase.database().ref('gameTables/');
+  newGameName: string = '';
 
   constructor(private session: SessionService, private router: Router, private authService: AuthService) {}
 
@@ -46,7 +47,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
     });
 
     this.tablesRef.on('child_changed', (newData) => {
-      console.log(newData.val());
       let table = newData.val();
       let copy = this.gameTable.data;
       copy.forEach((data, index) => {
@@ -84,8 +84,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     this.session.createSession(newGame).subscribe((data: any) => {
         this.router.navigate(['/game/', data.name]);
+        this.newGameName = '';
     }, err => {
       console.log(err);
+      this.newGameName = '';
     });
   }
 
