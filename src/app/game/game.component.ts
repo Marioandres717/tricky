@@ -44,6 +44,8 @@ export class GameComponent implements OnInit, OnDestroy {
   grid: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
   enableClick: boolean;
 
+  players: any = [];
+  currentPlayer: string = '';
   constructor(private router: Router, private socketService: SocketService, private authService: AuthService,
               private userService: UserService, private uiService: UiService, private dialog: MatDialog,
               private sessionService: SessionService) {}
@@ -79,6 +81,8 @@ export class GameComponent implements OnInit, OnDestroy {
       if (gameStatus.currentPlayer === this.user.name) {
           this.enableClick = true;
       }
+      this.players = gameStatus.players;
+      this.currentPlayer = gameStatus.currentPlayer;
       this.gameProgress = gameStatus;
       this.user.assignedNumber = this.gameProgress.players.indexOf(this.user.name) + 1;
       this.grid = this.gameProgress.grid;

@@ -1,18 +1,30 @@
+<div *ngIf="onGoingGame" class="container">
+  <div class="row">
+    <div class="col-lg-6 col-ml-12">
+      <section >
+        <mat-card class="mat-elevation-z3 size">
+          <mat-grid-list class="tic-tac-grid" cols="3" >
+            <mat-grid-tile *ngFor="let position of grid; let i = index;" (click)="onPlayerClick(i)">
+              <i *ngIf="position === 1" class="fas fa-times"></i>
+              <i *ngIf="position === 2" class="fal fa-circle"></i>
+            </mat-grid-tile>
+          </mat-grid-list>
+        </mat-card>
+      </section>
+    </div>
+    <div class="col-lg-6 col-md-12">
+      <div *ngFor="let player of players; let i = index">
+        <div [ngClass]="{'highlight-user': currentPlayer === player}" class="row">{{player}}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div *ngIf="!onGoingGame" class="waiting" fxLayoutAlign="center center" fxLayout="column" >
   <mat-spinner></mat-spinner>
   <h1>Waiting for Opponent....</h1>
 </div>
 
-<section *ngIf="onGoingGame">
-  <mat-card class="mat-elevation-z3 size">
-    <mat-grid-list class="tic-tac-grid" cols="3" >
-      <mat-grid-tile *ngFor="let position of grid; let i = index;" (click)="onPlayerClick(i)">
-        <i *ngIf="position === 1" class="fas fa-times"></i>
-        <i *ngIf="position === 2" class="fal fa-circle"></i>
-      </mat-grid-tile>
-    </mat-grid-list>
-  </mat-card>
-</section>
 
 
 <!--<div class="container" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-around" fxLayout.lt-sm="column">-->

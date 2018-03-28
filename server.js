@@ -77,13 +77,12 @@ io.on('connection', function(socket) {
 
     socket.on('player-move', function (gameStatus) {
       let canMove = false;
+      let winnerIndex = checkWinner(gameStatus.grid);
       gameStatus.grid.forEach(function(position) {
         if (!position) canMove = true;
       });
 
       if (canMove && gameStatus.winner === '') {
-        let winnerIndex = checkWinner(gameStatus.grid);
-
         if (!winnerIndex) {
           gameStatus.currentPlayer === gameStatus.players[0]
             ? gameStatus.currentPlayer = gameStatus.players[1]
@@ -97,8 +96,15 @@ io.on('connection', function(socket) {
           io.in(gameStatus.roomId).emit('game-over', gameStatus.winner);
         }
       } else {
+        gameStatus.winner = winnerIndex !== -1 ? gameStatus.players[winnerIndex - 1] : '';
+        gameStatus.currentPlayer = '';
         io.in(gameStatus.roomId).emit('game-updated', gameStatus);
-        io.in(gameStatus.roomId).emit('game-over', 'draw');
+        if (gameStatus.winner) {
+          io.in(gameStatus.roomId).emit('game-over', gameStatus.winner);
+        } else {
+          io.in(gameStatus.roomId).emit('game-over', 'draw');
+          gameStatus.winner = 'draw';
+        }
       }
     });
 

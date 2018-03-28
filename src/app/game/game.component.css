@@ -39,3 +39,8 @@ mat-grid-tile {
 .waiting {
   padding: auto;
 }
+
+.highlight-user {
+  background-color: red;
+  color: green;
+}
