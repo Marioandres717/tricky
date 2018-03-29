@@ -49,7 +49,7 @@ io.on('connection', function(socket) {
 
     // PLAYER CLOSES THE BROWSER
     socket.on('disconnect', function() {
-      io.to(socket.gameID).emit('opponent left', 'Your opponent left the game! YOU HAVE WON!');
+      io.to(socket.gameID).emit('opponent left', 'Your opponent left the game!');
       socket.gameID = null;
       socket.disconnect(true);
     });
