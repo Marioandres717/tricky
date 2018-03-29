@@ -1,48 +1,78 @@
 import { Component, OnInit } from '@angular/core';
 import {AiService} from '../shared/ai.service';
-import {UiService} from '../shared/ui.service';
+import { CheckWinner } from '../shared/ai.service'
+import { UiService } from '../shared/ui.service';
+import { AuthService } from '../shared/auth.service';
 
 @Component({
-  selector: 'app-ai-board',
+  selector: 'app-ai-board',   
   templateUrl: './ai-board.component.html',
   styleUrls: ['./ai-board.component.css']
 })
 export class AiBoardComponent implements OnInit {
-  blocks: string[];
+  blocks: string[] = [];
   playerSymbol = 'O';
-  aiMove: number;
-  turn = 'O';
-  constructor(private aiService: AiService, private uiService: UiService) { }
+  aiMove: number[];
+  // checkWinner: CheckWinner
+  player = this.auth.userInfo().email;
+
+  constructor(private aiService: AiService, private uiService: UiService, private auth: AuthService, private checkWinner: CheckWinner) { }
 
   ngOnInit() {
     this.blocks = this.aiService.state;
-    this.aiService.aisign = 'X';
-    this.aiService.humansign = 'O';
+    console.log(this.blocks);
+  }
+
+  restartGame() {
+    for (let i = 0; i < 9; i++) {
+      this.blocks[i] = null;
+    }
   }
 
   onPlayerClick(position: number) {
-    if (this.turn !== 'O') {
-      this.uiService.showSnackBar('You must wait for your turn!', null, 3000);
+    // CHECK IF THERE ARE AVAILABLE MOVES OR WINNERS AFTER HOMAN MAKES A MOVE
+    if (this.blocks[position]) {
+      this.uiService.showSnackBar(`You cannot play this block`, null, 5000);
     } else {
-      if (this.blocks[position]) {
-        this.uiService.showSnackBar('This place is Already been use!, Pick Different one', null, 3000);
-      } else {
-        this.blocks[position] = this.playerSymbol;
-        this.turn = 'X';
-        this.aiService.state = this.blocks;
-        this.aiMove = this.aiService.getMove();
-        console.log(this.aiMove);
-        this.blocks[this.aiMove] = 'X';
-        if (this.aiMove === 10) {
-          this.turn = '';
-          this.uiService.showSnackBar('The AI won!!', null, 10000);
-        } else if (this.aiMove === -10) {
-          this.turn = '';
-          this.uiService.showSnackBar('Player Won!', null, 10000);
-        } else {
-          this.turn = 'O';
-        }
+
+      this.blocks[position] = this.playerSymbol;
+      this.aiService.state = this.blocks;
+      if(this.checkWinner.hasMoves(this.blocks) == false)
+      {
+        // DO SOMETHING TO DISPLAY DRAW
+        this.uiService.showSnackBar(`You Game is a draw`, null, 5000);
       }
-    }
+
+      if(this.checkWinner.returnWinner(this.blocks) != "nowinner")
+      {
+        // DO SOMETHING TO DISPLAY HUMAN WON
+        this.uiService.showSnackBar(`You have Won ${this.player}`, null, 5000);                      
+      }
+
+
+        // END CHECK IF HUMAN WON OR HUMAN HAD LAST MOVE
+
+        this.aiService.aisign = 'X';
+        this.aiService.humansign = 'O';
+        this.aiMove = this.aiService.minimax(this.blocks,'X');
+        console.log(this.aiMove);
+        this.blocks[this.aiMove[0]] = 'X';
+        // CHECK IF THERE ARE AVAILABLE MOVES OR WINNERS AFTER AI MAKES A MOVE
+
+
+        if(this.checkWinner.hasMoves(this.blocks) == false)
+        {
+          // DO SOMETHING TO DISPLAY DRAW
+          this.uiService.showSnackBar(`You Game is a draw`, null, 5000);
+        }
+
+        if(this.checkWinner.returnWinner(this.blocks) != "nowinner")
+        {
+          // DO SOMETHING TO AI WON
+          this.uiService.showSnackBar(`You loose Human! AI Agent won!`, null, 5000);
+        }
+    }                
+    // END CHECK IF AI WON OR AI HAD LAST MOVE
   }
+
 }

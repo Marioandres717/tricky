@@ -13,23 +13,16 @@ If you have any specific question, email me at ovcina2m@uregina.ca or text me at
 
 
 import { Injectable } from '@angular/core';
-class CheckWinner
+@Injectable()
+export class CheckWinner
 {
-  // holds array of current game state
-  state: string[];
-
-  // constructor
-  constructor(game_state: string[])
-  {
-    this.state = game_state;
-  }
 
   // return true if there exists at least one tile that is empty
   // otherwise, return false...
   // TO CHANGE WHAT IS RETURNED< CHANGE return true/false TO WHATEVER YOU NEED
-  hasMoves()
+  hasMoves(state: any)
   {
-    for (let i of this.state)
+    for (let i of state)
     {
       if (i === null )
       {
@@ -41,7 +34,7 @@ class CheckWinner
   // returns sign of winner. If, for example, X has 3 tiles in any winnin position, X will be returned
   // If there is no winning combination or a draw, nowinner will be returned..
   // TO CHANGE WHAT IS RETURNED< CHANGE no_winner VARIABLE //
-  returnWinner()
+  returnWinner(state: any)
   {
 
 
@@ -51,9 +44,9 @@ class CheckWinner
      |     |
      |_____|
      */
-    if ((this.state[0] != null) && (this.state[0] == this.state[1]) && (this.state[1] == this.state[2]) && (this.state[0] == this.state[2]))
+    if ((state[0] != null) && (state[0] == state[1]) && (state[1] == state[2]) && (state[0] == state[2]))
     {
-      return this.state[0];
+      return state[0];
     }
 
     /*
@@ -62,9 +55,9 @@ class CheckWinner
    |x x x|
    |_____|
    */
-    if(this.state[3] != null && (this.state[3] == this.state[4]) && (this.state[4] == this.state[5]) && (this.state[5] == this.state[3]))
+    if(state[3] != null && (state[3] == state[4]) && (state[4] == state[5]) && (state[5] == state[3]))
     {
-      return this.state[3];
+      return state[3];
     }
 
     /*
@@ -73,9 +66,9 @@ class CheckWinner
     |     |
     |x x x|
    */
-    if(this.state[6] != null && (this.state[6] == this.state[7]) && (this.state[7] == this.state[8]) && (this.state[8] == this.state[6]))
+    if(state[6] != null && (state[6] == state[7]) && (state[7] == state[8]) && (state[8] == state[6]))
     {
-      return this.state[6];
+      return state[6];
     }
 
     /*
@@ -84,9 +77,9 @@ class CheckWinner
     |x    |
     |x____|
     */
-    if(this.state[0] != null && (this.state[0] == this.state[3]) && (this.state[3] == this.state[6]) && (this.state[6] == this.state[0]))
+    if(state[0] != null && (state[0] == state[3]) && (state[3] == state[6]) && (state[6] == state[0]))
     {
-      return this.state[0];
+      return state[0];
     }
 
     /*
@@ -95,9 +88,9 @@ class CheckWinner
   |  x  |
   |__x__|
   */
-    if(this.state[1] != null && (this.state[1] == this.state[4]) && (this.state[4] == this.state[7]) && (this.state[7] == this.state[1]))
+    if(state[1] != null && (state[1] == state[4]) && (state[4] == state[7]) && (state[7] == state[1]))
     {
-      return this.state[1];
+      return state[1];
     }
 
     /*
@@ -106,9 +99,9 @@ class CheckWinner
      |    x|
      |____x|
      */
-    if(this.state[2] != null && (this.state[2] == this.state[5]) && (this.state[5] == this.state[8]) && (this.state[8] == this.state[2]))
+    if(state[2] != null && (state[2] == state[5]) && (state[5] == state[8]) && (state[8] == state[2]))
     {
-      return this.state[2];
+      return state[2];
     }
 
     /*
@@ -117,9 +110,9 @@ class CheckWinner
    |  x  |
    |____x|
    */
-    if(this.state[0] != null && (this.state[0] == this.state[4]) && (this.state[4] == this.state[8]) && (this.state[8] == this.state[0]))
+    if(state[0] != null && (state[0] == state[4]) && (state[4] == state[8]) && (state[8] == state[0]))
     {
-      return this.state[0];
+      return state[0];
     }
 
     /*
@@ -128,9 +121,9 @@ class CheckWinner
     |  x  |
     |x____|
     */
-    if(this.state[2] != null && (this.state[2] == this.state[4]) && (this.state[4] == this.state[6]) && (this.state[6] == this.state[2]))
+    if(state[2] != null && (state[2] == state[4]) && (state[4] == state[6]) && (state[6] == state[2]))
     {
-      return this.state[2];
+      return state[2];
     }
 
     // if at this point, there is no winner, return no winner
@@ -188,7 +181,7 @@ export class AiService {
   }
 
 
-  private minimax(state: string[], player: string)
+  minimax(state: string[], player: string)
   {
     // Hold alailabe moves at each level of recursion
     // move val is a 2d array with first index [x][] pointing to moves array
@@ -202,9 +195,9 @@ export class AiService {
     let all_moves: number[][] = new Array();
 
     // Check the state of game
-    let move_state = new  CheckWinner(state);
-    let winner = move_state.returnWinner();
-    let moves = move_state.hasMoves();
+    let move_state = new  CheckWinner();
+    let winner = move_state.returnWinner(state);
+    let moves = move_state.hasMoves(state);
 
     // Begin base case
     // If its my turn and I worn, return +10, position do not care

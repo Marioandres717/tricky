@@ -22,7 +22,7 @@ import { AuthService } from './shared/auth.service';
 import {UiService} from './shared/ui.service';
 import { PageNotFoundComponent } from './not-found.component';
 import { SocketService } from './shared/socket.service';
-import { AiService } from './shared/ai.service';
+import { AiService, CheckWinner } from './shared/ai.service';
 import { AiBoardComponent } from './ai-board/ai-board.component';
 import { RematchComponent } from './game/rematch.component';
 
@@ -55,7 +55,7 @@ firebase.initializeApp(environment.firebase);
     HttpClientModule,
   ],
   entryComponents: [PlayerLeftComponent, RematchComponent],
-  providers: [AuthService,  UiService, SocketService, AiService, SessionService, UserService],
+  providers: [AuthService,  UiService, SocketService, AiService, SessionService, UserService, CheckWinner],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
