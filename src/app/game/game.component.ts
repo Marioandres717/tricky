@@ -8,11 +8,12 @@ import {UiService} from '../shared/ui.service';
 import {PlayerLeftComponent} from './player-left.component';
 import {MatDialog} from '@angular/material';
 import {RematchComponent} from './rematch.component';
-import {NewSession} from "../interfaces/table.model";
+import {NewSession} from '../interfaces/table.model';
 
 
 export interface GameProgress {
   players: string[];
+  playerPhotos: string[];
   currentPlayer: string;
   grid: number[];
   roomId: string;
@@ -22,6 +23,7 @@ export interface GameProgress {
 export interface User {
   name: string;
   assignedNumber: number;
+  photoURL ?: string;
 }
 
 @Component({
@@ -36,16 +38,18 @@ export class GameComponent implements OnInit, OnDestroy {
   private gameProgress: GameProgress;
   private user: User = {
     name: this.authService.userInfo().email,
-    assignedNumber: undefined
+    assignedNumber: undefined,
+    photoURL: this.authService.userInfo().photoURL
   };
   private userProfile: UserProfile;
-  onGoingGame: boolean = false;
+  onGoingGame = false;
 
   grid: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
   enableClick: boolean;
 
   players: any = [];
-  currentPlayer: string = '';
+  playerPhotos: any = [];
+  currentPlayer = '';
   constructor(private router: Router, private socketService: SocketService, private authService: AuthService,
               private userService: UserService, private uiService: UiService, private dialog: MatDialog,
               private sessionService: SessionService) {}
@@ -82,6 +86,7 @@ export class GameComponent implements OnInit, OnDestroy {
           this.enableClick = true;
       }
       this.players = gameStatus.players;
+      this.playerPhotos = gameStatus.playerPhotos;
       this.currentPlayer = gameStatus.currentPlayer;
       this.gameProgress = gameStatus;
       this.user.assignedNumber = this.gameProgress.players.indexOf(this.user.name) + 1;
@@ -130,7 +135,7 @@ export class GameComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.sessionService.getSession(this.gameSession).subscribe((session: NewSession) => {
       let players = session.players || [];
-      if (players.indexOf(this.user.name) !== -1) players.splice(players.indexOf(this.user.name));
+      if (players.indexOf(this.user.name) !== -1) { players.splice(players.indexOf(this.user.name)); }
       let params: any = {
         numberOfPlayers: players.length,
         players: players

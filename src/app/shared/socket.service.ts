@@ -17,7 +17,7 @@ export class SocketService {
     return socket;
   }
   private joinGame(socket: any, id: string) {
-    socket.emit('join-game', { gameID: id, username: this.userInfo.email });
+    socket.emit('join-game', { gameID: id, username: this.userInfo.email, photoURL: this.userInfo.photoURL });
   }
 
   public playerMove(socket: any, gameUpdate: any) {

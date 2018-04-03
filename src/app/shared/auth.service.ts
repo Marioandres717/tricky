@@ -40,6 +40,7 @@ export class AuthService {
         user_uid: user.uid,
         user_email: userForm.value.email,
         user_nickname: userForm.value.username,
+        user_photo_url: 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg',
         user_total_wins: 0,
         user_total_games: 0
       };
@@ -61,10 +62,12 @@ export class AuthService {
     const provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithPopup(provider).then((user) => {
       let userProfile = user.additionalUserInfo.profile;
+      console.log(userProfile.picture);
       let params: UserProfile = {
         user_uid: user.user.uid,
         user_email: userProfile.email,
         user_nickname: userProfile.name,
+        user_photo_url: userProfile.picture,
         user_total_wins: 0,
         user_total_games: 0
       };
@@ -76,7 +79,7 @@ export class AuthService {
           self.router.navigate(['/home']);
         }
       });
-    })
+    });
   }
   public signOut() {
     firebase.auth().signOut();

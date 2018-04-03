@@ -15,6 +15,7 @@ const PORT  = process.env.PORT || 8080;
 const CreateNewGame = function() {
   return {
     players: [],
+    playerPhotos: [],
     currentPlayer: '',
     grid: [0, 0, 0, 0, 0, 0, 0, 0, 0],
     roomId: '',
@@ -58,6 +59,7 @@ io.on('connection', function(socket) {
     socket.on('join-game', function(playerInfo) {
       let roomId = playerInfo.gameID,
           playerName = playerInfo.username,
+          playerPhoto = playerInfo.photoURL,
           room;
 
       socket.join(roomId);
@@ -65,6 +67,7 @@ io.on('connection', function(socket) {
       room = io.sockets.adapter.rooms[roomId];
       if (room && room.game === undefined) room.game = new CreateNewGame();
       room.game.players.push(playerName);
+      room.game.playerPhotos.push(playerPhoto);
       if (room.length === 2) {
         room.game.currentPlayer = room.game.players[0];
         room.game.roomId = roomId;

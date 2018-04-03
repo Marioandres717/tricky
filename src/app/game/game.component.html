@@ -14,7 +14,7 @@
     </div>
     <div class="col-lg-6 col-md-12">
       <div *ngFor="let player of players; let i = index">
-        <div [ngClass]="{'highlight-user': currentPlayer === player}" class="row">{{player}}</div>
+        <div [ngClass]="{'highlight-user': currentPlayer === player}" class="row base"><img src="{{playerPhotos[i]}}" class="smaller-pic"> {{player}}</div>
       </div>
     </div>
   </div>

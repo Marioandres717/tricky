@@ -41,6 +41,18 @@ mat-grid-tile {
 }
 
 .highlight-user {
-  background-color: red;
-  color: green;
+  background-color: #da9796;
+}
+
+.smaller-pic {
+  border-radius: 100%;
+  max-height: 80px;
+  max-width: 80px;
+  margin-right: 10px;
+}
+
+.base {
+  font-size: 1.5em;
+  border: #7860f9 2px solid;
+  margin: 15px;
 }

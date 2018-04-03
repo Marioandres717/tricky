@@ -15,7 +15,6 @@ interface Login {
 export class LoginComponent implements OnInit {
   login: FormGroup;
   signUp: FormGroup;
-  loading: boolean;
   constructor( private auth: AuthService) { }
 
   ngOnInit() {
