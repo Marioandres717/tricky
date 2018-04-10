@@ -3,6 +3,7 @@
   <div class="row wrapper">
       <div class="col-lg-4 col-md-4">
           <form [formGroup]="signUp" (ngSubmit)="onSubmitRegistration(signUp)" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px">
+            <h3>Sign Up</h3>
             <mat-form-field>
               <input matInput type="email" formControlName="email" placeholder="Your email">
               <mat-error>Email is invalid.</mat-error>
@@ -13,7 +14,7 @@
               <mat-hint align="end">{{signUp.value.username.length}} / 4</mat-hint>
               <mat-error>has to be 4 characters long.</mat-error>
             </mat-form-field>
-  
+
             <mat-form-field hintLabel="Should be at least 6 characters long">
               <input matInput type="password" formControlName="password" placeholder="Your password" minlength="6">
               <mat-hint align="end">{{signUp.value.password.length}} / 6</mat-hint>
@@ -31,14 +32,16 @@
                 <mat-radio-button value="1">Male</mat-radio-button>
                 <mat-radio-button value="2">Female</mat-radio-button>
             </mat-radio-group>
-  
+
             <button mat-raised-button color="primary" type="submit" [disabled]="!signUp.valid">Sign Up</button>
           </form>
-        <button mat-raised-button color="warn" (click)="googleLogin()">Connect Google</button>
+          <button mat-raised-button color="warn" class="google-button" (click)="googleLogin()">Connect Google</button>
         </div>
-    <div class="col-lg-8 col-md-8 col-sm-8">
+
+    <div class="col-lg-8 col-md-8 col-sm-8 space">
       <section class="signup-form">
           <form fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px" [formGroup]="login" (ngSubmit)="onSubmitLogin(login)">
+            <h3>Login</h3>
             <mat-form-field>
               <input type="email" matInput placeholder="Your email" formControlName="email">
               <mat-error>Email is invalid.</mat-error>

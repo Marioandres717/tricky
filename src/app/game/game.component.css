@@ -56,3 +56,9 @@ mat-grid-tile {
   border: #7860f9 2px solid;
   margin: 15px;
 }
+.fa-times, .fa-circle {
+  font-size: 3em;
+}
+.fa-circle {
+  color: #9e1317;
+}

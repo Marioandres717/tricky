@@ -1,12 +1,12 @@
 <div *ngIf="onGoingGame" class="container">
   <div class="row">
-    <div class="col-lg-6 col-ml-12">
+    <div class="col-lg-6 col-md-12">
       <section >
         <mat-card class="mat-elevation-z3 size">
           <mat-grid-list class="tic-tac-grid" cols="3" >
             <mat-grid-tile *ngFor="let position of grid; let i = index;" (click)="onPlayerClick(i)">
               <i *ngIf="position === 1" class="fas fa-times"></i>
-              <i *ngIf="position === 2" class="fal fa-circle"></i>
+              <i *ngIf="position === 2" class="fas fa-circle"></i>
             </mat-grid-tile>
           </mat-grid-list>
         </mat-card>

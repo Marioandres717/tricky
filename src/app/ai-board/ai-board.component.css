@@ -26,3 +26,17 @@ mat-grid-tile {
 .aqui {
   padding-left: 200px;
 }
+
+@media only screen and (max-width: 599px) {
+  .container {
+    padding-top: 0;
+  }
+  .aqui {
+    padding-left: 0px;
+  }
+
+  .size {
+    max-width: 350px;
+    max-height: 400px;
+  }
+}

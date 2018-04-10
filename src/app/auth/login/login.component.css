@@ -5,3 +5,16 @@ mat-form-field {
 .wrapper {
   margin-top: 20px;
 }
+.google-button {
+  margin-left: 145px;
+  margin-top: 20px;
+}
+
+@media only screen and (max-width: 599px) {
+  .space {
+    margin-top: 15px;
+  }
+  .google-button {
+    margin: 30px 100px;
+  }
+}
