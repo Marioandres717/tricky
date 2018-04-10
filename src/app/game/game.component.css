@@ -5,12 +5,6 @@
   padding-top: 50px;
 }
 
-@media only screen and (max-width: 599px) {
-  .container {
-    padding-top: 0;
-  }
-}
-
 mat-grid-tile {
   cursor: pointer;
 }
@@ -41,7 +35,7 @@ mat-grid-tile {
 }
 
 .highlight-user {
-  background-color: #da9796;
+  background-color: #85B7D9;
 }
 
 .smaller-pic {
@@ -61,4 +55,17 @@ mat-grid-tile {
 }
 .fa-circle {
   color: #9e1317;
+}
+
+@media only screen and (max-width: 599px) {
+  .container {
+    padding-top: 0;
+  }
+  .smaller-pic {
+    max-height: 30px;
+    max-width: 30px;
+  }
+  .base {
+    font-size: 1em;
+  }
 }
